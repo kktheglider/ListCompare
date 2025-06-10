@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Turnstile Token</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </head>
+  <body>
+    <h2>Solve Turnstile Below:</h2>
+    <form id="turnstile-form">
+      <div class="cf-turnstile"
+           data-sitekey="0x4AAAAAABgllIL-fmIGImj5"
+           data-callback="onSuccess">
+      </div>
+    </form>
+    <script>
+      function onSuccess(token) {
+        fetch('/save-token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token })
+        }).then(() => alert("Token saved to server!"));
+      }
+    </script>
+  </body>
+</html>
