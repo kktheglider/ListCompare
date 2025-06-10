@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Turnstile Token Extractor</title>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  </head>
-  <body>
-    <h2>✅ Solve Turnstile Challenge Below</h2>
-    <div class="cf-turnstile"
-         data-sitekey="0x4AAAAAABgllIL-fmIGImj5"
-         data-callback="onSuccess">
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <title>Turnstile with IP Auto-Target</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script src="https://api.ipify.org?format=jsonp&callback=onIpLoaded" defer></script>
+</head>
+<body>
+  <h2>✅ Solve Turnstile Challenge Below</h2>
+  <div class="cf-turnstile"
+       data-sitekey="0x4AAAAAABgllIL-fmIGImj5"
+       data-callback="onSuccess">
+  </div>
 
-    <script>
-      function onSuccess(token) {
-        console.log("Turnstile Token:", token);
+  <script>
+    let clientIP = "unknown";
+    let serverIP = "127.0.0.1";  // default fallback
 
-        fetch("http://your-server-ip:5000/save-token", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token })
-        })
-        .then(res => {
-          if (res.ok) alert("✅ Token sent to server!");
-          else alert("❌ Failed to save token.");
-        });
-      }
-    </script>
-  </body>
+    function onIpLoaded(data) {
+      clientIP = data.ip;
+      serverIP = data.ip;
+      console.log("📡 Your public IP:", clientIP);
+    }
+
+    function onSuccess(token) {
+      const endpoint = `http://${serverIP}:5000/save-token`;
+      console.log("🔗 Sending to:", endpoint);
+      console.log("🧠 Token:", token);
+
+      fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, ip: clientIP })
+      })
+      .then(res => {
+        if (res.ok) alert("✅ Token and IP sent to server!");
+        else alert("❌ Server error. Check console.");
+      })
+      .catch(err => {
+        console.error("❌ Network error:", err);
+        alert("❌ Could not reach your backend server.");
+      });
+    }
+  </script>
+</body>
 </html>
