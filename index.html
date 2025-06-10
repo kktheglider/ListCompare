@@ -1,47 +1,442 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Turnstile with IP Auto-Target</title>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script src="https://api.ipify.org?format=jsonp&callback=onIpLoaded" defer></script>
-</head>
-<body>
-  <h2>✅ Solve Turnstile Challenge Below</h2>
-  <div class="cf-turnstile"
-       data-sitekey="0x4AAAAAABdJseUK3fpyoPL2"
-       data-callback="onSuccess">
-  </div>
-
-  <script>
-    let clientIP = "unknown";
-    let serverIP = "127.0.0.1";  // default fallback
-
-    function onIpLoaded(data) {
-      clientIP = data.ip;
-      serverIP = data.ip;
-      console.log("📡 Your public IP:", clientIP);
-    }
-
-    function onSuccess(token) {
-      const endpoint = `http://${serverIP}:5000/save-token`;
-      console.log("🔗 Sending to:", endpoint);
-      console.log("🧠 Token:", token);
-
-      fetch(endpoint, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, ip: clientIP })
-      })
-      .then(res => {
-        if (res.ok) alert("✅ Token and IP sent to server!");
-        else alert("❌ Server error. Check console.");
-      })
-      .catch(err => {
-        console.error("❌ Network error:", err);
-        alert("❌ Could not reach your backend server.");
-      });
-    }
-  </script>
-</body>
+  <head>
+    <meta charSet="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" as="image" href="/assets/img/logo.svg" />
+    <link
+      rel="stylesheet"
+      href="/_next/static/css/21d4e6dbe940e348.css"
+      data-precedence="next"
+    />
+    <link
+      rel="stylesheet"
+      href="/_next/static/css/76c17674923fe1c9.css"
+      data-precedence="next"
+    />
+    <link
+      rel="stylesheet"
+      href="/_next/static/css/d147f630ca6299bf.css"
+      data-precedence="next"
+    />
+    <link
+      rel="stylesheet"
+      href="/_next/static/css/3b032f32ecab31cf.css"
+      data-precedence="next"
+    />
+    <link
+      rel="preload"
+      as="script"
+      fetchPriority="low"
+      href="/_next/static/chunks/webpack-e129b55cd239abc6.js"
+    />
+    <script
+      src="/_next/static/chunks/fd9d1056-1c5bf438233445e5.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/7023-eeb0c04c76b489ae.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/main-app-55bbd77d79f9187f.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/8087-bc7976434df271e9.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/8472-ff209a9afc10eef2.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/231-5f01ae4189d5fe00.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/922-82fc462d9f4b917f.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/6648-7ac39b45dcd26369.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/6284-9f82396dfb639be8.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/8504-9bb7fc0107f7dddb.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/7196-c69ba7736e31d8e0.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/5671-29026c90dac0d7ff.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/4008-9f19f305ccc9832d.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/3463-5ec04f01ee1007da.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/3865-c6f4b226270eaf0f.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/2943-48734fd70160abed.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/1725-f597f76d24f28cb6.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/3078-c1b2cf731f455468.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/9696-e055315bb5270594.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/8403-b47bdfbf20ad104d.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/app/%5Blocale%5D/page-60c456dc660ab0db.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/9612-0aeb3b26568280f2.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/4087-37d674bd847a34a3.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/8710-f15d5dc4fd48669b.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/5020-66eaa0659f5da592.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/9910-ca6907ce5020bfb7.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/app/%5Blocale%5D/layout-c0aca88f0c1d4d0c.js"
+      async=""
+    ></script>
+    <script
+      src="/_next/static/chunks/app/%5Blocale%5D/error-1fc30e622495e1d1.js"
+      async=""
+    ></script>
+    <link rel="preload" href="https://cookiecdn.com/cwc.js" as="script" />
+    <link
+      rel="preload"
+      href="https://cookiecdn.com/configs/uWK76m6BdfuGixQ35VWfLNxD"
+      as="script"
+    />
+    <meta
+      name="google-site-verification"
+      content="OnQ4JxkRoqEItOk8-uKHZqcnv0V9PJYZCkm6JYS46sw"
+    />
+    <title>Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu</title>
+    <meta
+      name="description"
+      content="Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"
+    />
+    <link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
+    <meta
+      name="keywords"
+      content="Mogu Mogu, drinking, Nata de Coco, fresh, fruit, juice, chew, low sugar, healthy"
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://www.mogumogu.com" />
+    <link rel="alternate" hrefLang="fr" href="https://www.mogumogu.com/fr" />
+    <link rel="alternate" hrefLang="ko" href="https://www.mogumogu.com/kr" />
+    <link rel="alternate" hrefLang="id" href="https://www.mogumogu.com/id" />
+    <link rel="alternate" hrefLang="en" href="https://www.mogumogu.com" />
+    <link
+      rel="alternate"
+      hrefLang="x-default"
+      href="https://www.mogumogu.com"
+    />
+    <meta
+      property="og:title"
+      content="Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu"
+    />
+    <meta
+      property="og:description"
+      content="Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"
+    />
+    <meta property="og:url" content="https://www.mogumogu.com" />
+    <meta property="og:site_name" content="Mogu Mogu - Nata De Coco Drink" />
+    <meta
+      property="og:image"
+      content="https://www.mogumogu.com/assets/img/pages/home/showcase-jun-02-mb.png"
+    />
+    <meta property="og:image:width" content="800" />
+    <meta property="og:image:height" content="600" />
+    <meta property="og:image:alt" content="Home | Mogu Mogu" />
+    <meta
+      property="og:image"
+      content="https://www.mogumogu.com/assets/img/pages/home/showcase-jun-04-dt.png"
+    />
+    <meta property="og:image:width" content="1800" />
+    <meta property="og:image:height" content="1600" />
+    <meta property="og:image:alt" content="Home | Mogu Mogu" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu"
+    />
+    <meta
+      name="twitter:description"
+      content="Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://www.mogumogu.com/assets/img/pages/home/showcase-jun-02-mb.png"
+    />
+    <meta name="twitter:image:width" content="800" />
+    <meta name="twitter:image:height" content="600" />
+    <meta name="twitter:image:alt" content="Home | Mogu Mogu" />
+    <meta
+      name="twitter:image"
+      content="https://www.mogumogu.com/assets/img/pages/home/showcase-jun-04-dt.png"
+    />
+    <meta name="twitter:image:width" content="1800" />
+    <meta name="twitter:image:height" content="1600" />
+    <meta name="twitter:image:alt" content="Home | Mogu Mogu" />
+    <link rel="apple-touch-icon" href="/favicon/apple-icon.png" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "MoguMogu",
+        "url": "https://www.mogumogu.com/",
+        "logo": "https://www.mogumogu.com/assets/img/logo.svg",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "areaServed": "Worldwide",
+          "availableLanguage": ["English", "Korean", "French"]
+        },
+        "sameAs": [
+          "https://www.tiktok.com/@mogumogu_official",
+          "https://www.instagram.com/mogumogu_global"
+        ]
+      }
+    </script>
+    <script type="text/javascript">
+      ;(function (c, l, a, r, i, t, y) {
+        c[a] =
+          c[a] ||
+          function () {
+            ;(c[a].q = c[a].q || []).push(arguments)
+          }
+        t = l.createElement(r)
+        t.async = 1
+        t.src = 'https://www.clarity.ms/tag/' + i
+        y = l.getElementsByTagName(r)[0]
+        y.parentNode.insertBefore(t, y)
+      })(window, document, 'clarity', 'script', 'otp1lzschg')
+    </script>
+    <script
+      src="/_next/static/chunks/polyfills-78c92fac7aa8fdd8.js"
+      noModule=""
+    ></script>
+  </head>
+  <body>
+    <header class="Header_mogu-header__Q2fGd">
+      <div class="container flex max-w-[1340px] py-[11.5px]">
+        <nav
+          class="flex w-full items-center justify-between gap-8 xl:w-auto xl:gap-20"
+        >
+          <a href="/en"
+            ><img
+              alt="Mogu Mogu - logo"
+              loading="eager"
+              width="204.31"
+              height="35"
+              decoding="async"
+              data-nimg="1"
+              style="color: transparent"
+              src="/assets/img/logo.svg"
+          /></a>
+          <div class="flex items-center gap-6 xl:hidden">
+            <div>
+              <div class="cursor-pointer">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M15.7498 6C15.7498 8.07107 14.0709 9.75 11.9998 9.75C9.92877 9.75 8.24984 8.07107 8.24984 6C8.24984 3.92893 9.92877 2.25 11.9998 2.25C14.0709 2.25 15.7498 3.92893 15.7498 6Z"
+                    stroke="#151F6D"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                  <path
+                    d="M4.50098 20.1182C4.57128 16.0369 7.90171 12.75 11.9998 12.75C16.0981 12.75 19.4286 16.0371 19.4987 20.1185C17.2159 21.166 14.6762 21.75 12.0002 21.75C9.32384 21.75 6.78394 21.1659 4.50098 20.1182Z"
+                    stroke="#151F6D"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </svg>
+              </div>
+            </div>
+            <div>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5 13C4.44772 13 4 12.5523 4 12C4 11.4477 4.44772 11 5 11H19C19.5523 11 20 11.4477 20 12C20 12.5523 19.5523 13 19 13H5Z"
+                  fill="#151F6D"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5 18C4.44772 18 4 17.5523 4 17C4 16.4477 4.44772 16 5 16H19C19.5523 16 20 16.4477 20 17C20 17.5523 19.5523 18 19 18H5Z"
+                  fill="#151F6D"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5 8C4.44772 8 4 7.55228 4 7C4 6.44772 4.44772 6 5 6H19C19.5523 6 20 6.44772 20 7C20 7.55228 19.5523 8 19 8H5Z"
+                  fill="#151F6D"
+                ></path>
+              </svg>
+            </div>
+          </div>
+          <ul
+            class="Header_mogu-header-menu___CPzE flex flex-col items-center gap-8 xl:flex-row !hidden xl:!flex"
+          ></ul>
+        </nav>
+        <div class="hidden grow items-center justify-end gap-6 xl:flex">
+          <div class="relative cursor-pointer">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 21C16.1926 21 19.7156 18.1332 20.7157 14.2529M12 21C7.80742 21 4.28442 18.1332 3.2843 14.2529M12 21C14.4853 21 16.5 16.9706 16.5 12C16.5 7.02944 14.4853 3 12 3M12 21C9.51472 21 7.5 16.9706 7.5 12C7.5 7.02944 9.51472 3 12 3M12 3C15.3652 3 18.299 4.84694 19.8431 7.58245M12 3C8.63481 3 5.70099 4.84694 4.15692 7.58245M19.8431 7.58245C17.7397 9.40039 14.9983 10.5 12 10.5C9.00172 10.5 6.26027 9.40039 4.15692 7.58245M19.8431 7.58245C20.5797 8.88743 21 10.3946 21 12C21 12.778 20.9013 13.5329 20.7157 14.2529M20.7157 14.2529C18.1334 15.6847 15.1619 16.5 12 16.5C8.8381 16.5 5.86662 15.6847 3.2843 14.2529M3.2843 14.2529C3.09871 13.5329 3 12.778 3 12C3 10.3946 3.42032 8.88743 4.15692 7.58245"
+                stroke="#151F6D"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></path>
+            </svg>
+          </div>
+          <div>
+            <div class="cursor-pointer">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M15.7498 6C15.7498 8.07107 14.0709 9.75 11.9998 9.75C9.92877 9.75 8.24984 8.07107 8.24984 6C8.24984 3.92893 9.92877 2.25 11.9998 2.25C14.0709 2.25 15.7498 3.92893 15.7498 6Z"
+                  stroke="#151F6D"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+                <path
+                  d="M4.50098 20.1182C4.57128 16.0369 7.90171 12.75 11.9998 12.75C16.0981 12.75 19.4286 16.0371 19.4987 20.1185C17.2159 21.166 14.6762 21.75 12.0002 21.75C9.32384 21.75 6.78394 21.1659 4.50098 20.1182Z"
+                  stroke="#151F6D"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="bg-beige">
+      <div class="animate-pulse bg-skeleton w-full h-[1080px]"></div>
+    </main>
+    <script
+      src="/_next/static/chunks/webpack-e129b55cd239abc6.js"
+      async=""
+    ></script>
+    <script>
+      ;(self.__next_f = self.__next_f || []).push([0])
+      self.__next_f.push([2, null])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '1:HL["/_next/static/css/21d4e6dbe940e348.css","style"]\n2:HL["/_next/static/css/76c17674923fe1c9.css","style"]\n3:HL["/_next/static/css/d147f630ca6299bf.css","style"]\n4:HL["/_next/static/css/3b032f32ecab31cf.css","style"]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '5:I[95751,[],""]\n7:I[72125,["8087","static/chunks/8087-bc7976434df271e9.js","8472","static/chunks/8472-ff209a9afc10eef2.js","231","static/chunks/231-5f01ae4189d5fe00.js","922","static/chunks/922-82fc462d9f4b917f.js","6648","static/chunks/6648-7ac39b45dcd26369.js","6284","static/chunks/6284-9f82396dfb639be8.js","8504","static/chunks/8504-9bb7fc0107f7dddb.js","7196","static/chunks/7196-c69ba7736e31d8e0.js","5671","static/chunks/5671-29026c90dac0d7ff.js","4008","static/chunks/4008-9f19f305ccc9832d.js","3463","static/chunks/3463-5ec04f01ee1007da.js","3865","static/chunks/3865-c6f4b226270eaf0f.js","2943","static/chunks/2943-48734fd70160abed.js","1725","static/chunks/1725-f597f76d24f28cb6.js","3078","static/chunks/3078-c1b2cf731f455468.js","9696","static/chunks/9696-e055315bb5270594.js","8403","static/chunks/8403-b47bdfbf20ad104d.js","5061","static/chunks/app/%5Blocale%5D/page-60c456dc660ab0db.js"],"HomePage"]\n9:I[39275,[],""]\na:I[61343,[],""]\nc:I[76130,[],""]\nd:[]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '0:[null,["$","$L5",null,{"buildId":"ukkQx5NrguG4U-edoJXP7","assetPrefix":"","initialCanonicalUrl":"/","initialTree":["",{"children":[["locale","en","d"],{"children":["__PAGE__",{}]},"$undefined","$undefined",true]}],"initialSeedData":["",{"children":[["locale","en","d"],{"children":["__PAGE__",{},[["$L6",["$","main",null,{"className":"bg-beige","children":["$","$L7",null,{}]}]],null],null]},["$L8",null],null]},["$","$L9",null,{"parallelRouterKey":"children","segmentPath":["children"],"error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$La",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\\"Segoe UI\\",Roboto,Helvetica,Arial,sans-serif,\\"Apple Color Emoji\\",\\"Segoe UI Emoji\\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":"404"}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],"notFoundStyles":[],"styles":[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/21d4e6dbe940e348.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/76c17674923fe1c9.css","precedence":"next","crossOrigin":"$undefined"}]]}],null],"couldBeIntercepted":false,"initialHead":[false,"$Lb"],"globalErrorComponent":"$c","missingSlots":"$Wd"}]]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        '8:["$","html",null,{"lang":"en","children":[["$","head",null,{"children":[["$","script",null,{"type":"application/ld+json","dangerouslySetInnerHTML":{"__html":"{\\"@context\\":\\"https://schema.org\\",\\"@type\\":\\"Organization\\",\\"name\\":\\"MoguMogu\\",\\"url\\":\\"https://www.mogumogu.com/\\",\\"logo\\":\\"https://www.mogumogu.com/assets/img/logo.svg\\",\\"contactPoint\\":{\\"@type\\":\\"ContactPoint\\",\\"areaServed\\":\\"Worldwide\\",\\"availableLanguage\\":[\\"English\\",\\"Korean\\",\\"French\\"]},\\"sameAs\\":[\\"https://www.tiktok.com/@mogumogu_official\\",\\"https://www.instagram.com/mogumogu_global\\"]}"}}],["$","script",null,{"type":"text/javascript","dangerouslySetInnerHTML":{"__html":"(function(c,l,a,r,i,t,y){ c[a]=c[a]||function(){ (c[a].q=c[a].q||[]).push(arguments) }; t=l.createElement(r); t.async=1; t.src=\\"https://www.clarity.ms/tag/\\"+i; y=l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t,y); })(window, document, \\"clarity\\", \\"script\\", \\"otp1lzschg\\");"}}]]}],["$","body",null,{"children":"$Le"}]]}]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        'f:I[12612,["8087","static/chunks/8087-bc7976434df271e9.js","8472","static/chunks/8472-ff209a9afc10eef2.js","231","static/chunks/231-5f01ae4189d5fe00.js","6648","static/chunks/6648-7ac39b45dcd26369.js","9612","static/chunks/9612-0aeb3b26568280f2.js","4087","static/chunks/4087-37d674bd847a34a3.js","8710","static/chunks/8710-f15d5dc4fd48669b.js","5020","static/chunks/5020-66eaa0659f5da592.js","3078","static/chunks/3078-c1b2cf731f455468.js","9910","static/chunks/9910-ca6907ce5020bfb7.js","1203","static/chunks/app/%5Blocale%5D/layout-c0aca88f0c1d4d0c.js"],"default"]\n10:I[12985,["8087","static/chunks/8087-bc7976434df271e9.js","8472","static/chunks/8472-ff209a9afc10eef2.js","231","static/chunks/231-5f01ae4189d5fe00.js","6648","static/chunks/6648-7ac39b45dcd26369.js","9612","static/chunks/9612-0aeb3b26568280f2.js","4087","static/chunks/4087-37d674bd847a34a3.js","8710","static/chunks/8710-f15d5dc4fd48669b.js","5020","static/chunks/5020-66eaa0659f5da592.js","3078","static/chunks/3078-c1b2cf731f455468.js","9910","static/chunks/9910-ca6907ce5020bfb7.js","1203","static/chunks/app/%5Blocale%5D/layout-c0aca88f0c1d4d0c.js"],"default"]\n12:I[46665,["8087","static/chunks/8087-bc7976434df271e9.js","231","static/chunks/231-5f01ae4189d5fe00.js","6816","static/chunks/app/%5Blocale%5D/error-1fc30e622495e1d1.js"],"default"]\n11:["locale","en","d"]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        'e:["$","$Lf",null,{"locale":"en","now":"$D2025-06-10T08:08:46.266Z","timeZone":"UTC","messages":{"meta":{"home":{"siteName":"Mogu Mogu - Nata De Coco Drink","title":"Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu","description":"Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"}},"footer":{"subtext2":"Join the Mogu Mogu Campaign","subtext3":"More points, more fun with Mogu Mogu’s delicious nata de coco drinks! Every bottle is filled with refreshing fruit flavors and chewy goodness. Sip and earn points with each purchase, then redeem them for exclusive rewards and exciting promotions. The more you enjoy Mogu Mogu, the more rewards you unlock! It’s free to join—start sipping, earning, and having fun today!"},"button":{"joinNow":"Join Now","learnMore":"Learn More","findYourFlavor":"Find Your Flavor","exploreMore":"Explore More Fun","viewAll":"View All","seeMore":"See More","addToCart":"Like","addedToCart":"Liked!","cancel":"Cancel","save":"Save","confirm":"Confirm","viewProfile":"View Profile","viewMore":"View More","viewPoint":"View My Point","getReward":"Get Reward"},"link":{"mogumogu":"#MOGUMOGU","aboutUs":"About Us","campaign":"Campaign","contactUs":"Contact Us","cookiePreference":"Cookie Preference","funFilled":"FUN-FILLED ZONE","news":"News \u0026 Activities","ourStory":"Our Story","products":"Products","term":"Term \u0026 Condition","privacy":"Privacy policy","connect":"Connect","funCampaign":"Fun Campaign","mogumoguWorld":"MOGU MOGU World","gameRewards":"Game Center","gameMogumogu":"SPIN \u0026 WIN","redeemRewards":"Redeem rewards","leaderboard":"Leaderboard","getPoints":"Collect Point","myRewards":"My Rewards","history":"History","profile":"Profile","signOut":"Sign Out"},"marquee":{"youGottaChew":"YOU GOTTA CHEW","no1":" NO.1 NATA DE COCO SNACK DRINK WORLDWIDE"},"home":{"h1":"mogu mogu - Nata De Coco Drink","section1":{"moguSparks":"Mogu Mogu Sparks A Culture of\u003cbr class=\\"xl:hidden\\" /\u003e Boundless\\n\u003cbr class=\\"hidden xl:block\\" /\u003e Curiosity in Every Bite","sipChewFeel":"SIP CHEW FEEL\u003cbr /\u003e MOGU MOGU","heading":"MOGU MOGU \u003cbr /\u003e- Nata De \u003cbr /\u003eCoco Drink"},"section2":{},"section3":{"point":"\u003cb\u003eMOGU MOGU\u003c/b\u003e POINT","morePoint":"More Point, More Fun","redeem":"Redeem your valuable points with our exclusive campaign."},"section4":{"products":"PRODUCTS","discover":"Join the Nata de Coco Drink Taste Sensation","join":"Mogu Mogu gives a unique sensation of fruit juice with the smooth blending of Nata de Coco drink. Produced through the fermentation of pure coconut water, our Nata de Coco drink not only provides a distinctive chewy texture and taste but also makes every sip an extraordinary, refreshing, and fun drinking experience."},"section5":{"ourStory":"OUR STORY","sip":"Experience the Fun\u003cbr class=\\"hidden md:block\\" /\u003e with Mogu Mogu","description":"Mogu Mogu is a global favorite, loved by fans all over the world! With its perfect mix of Nata de Coco jelly and fresh fruit juice, every sip of Mogu Mogu is an adventure. The chewy coconut jelly makes each drink even more enjoyable. Haven’t tried it yet? Now’s your chance to dive into the fun and taste the difference for yourself!"},"section6":{"moguWorld":"MOGU MOGU WORLD","mogu":"Create Special Moments with Mogu Mogu","discover":"Mogu Mogu isn’t just a drink—it’s an experience! Whether you\'re hanging out with friends, relaxing at home, or on the go, Mogu Mogu’s unique combination of Nata de Coco and refreshing fruit juice makes the perfect companion. Each sip delivers a burst of flavor and a chewy surprise, turning every moment into something special. So why not make your ordinary moments extraordinary with Mogu Mogu? Join the fun, savor the deliciousness, and create memories to cherish!"},"section7":{"whatsNew":"What\'s New?"}},"campaign":{"ourRewards":"Our Rewards \u0026 Benefits","ourRewardsMessage":"With a wide range of rewards to choose, you can select the option that best suits your preferences and interests. Whether it\'s treating yourself or gifting something special to a loved one, the choice is yours.","howGetPrizes":"Claim Your Mogu Mogu Rewards in 4 Easy Steps","advancingThroughOurLevels":"Advancing Through Our Levels","leaderboard":"LEADERBOARD","anyQuestionsHere":"Any Questions? Here’s Answers","exploreYourChance":"Explore Your Chance,\u003cbr /\u003e Expand with Us","mogumoguPoint":"MOGU MOGU POINT","note":"In case of a tie, priority will be given to the user who entered the code first in determining the ranking.\u003cbr /\u003e This event may be subject to change or end prematurely without prior notice due to company circumstances.","onePointUnlocks":"1 Point\u003cbr /\u003e Unlocks Prizes","redeemPointsForm":"Redeem points from the codes found under the caps to claim\u003cbr class=\\"hidden md:block\\" /\u003e Mogu Mogu’s superior prizes. Catch up with us and\u003cbr class=\\"hidden md:block\\" /\u003e seize the opportunity!","benefitDesc1":"Claim your priviledge rewards from a variety of fantastic rewards. Select from the special of merchandise and indulge in exclusive experiences.","benefitDesc2":"Unlock exclusive e-vouchers and online discounts from your favorites platforms. Dive into a diverse selection and choose from a wide range of offers tailored just for you.","benefitDesc3":"you can redeem point for a variety of fantastic rewards. Choose from a selection of exclusive gift","benefitTitle1":"Gift Rewards","benefitTitle2":"E-Voucher and Discount","benefitTitle3":"Surprise Gift","benefitTitle4":"And more","howtoTitle1":"Create your account and Log in","howtoDesc1":"A unique combination of juice chewy bits resulting in a\\\\n great chewing and","howToTitle2":"Enter the code under the bottle cap","howToTitle3":"Submit to earn points","howToTitle4":"Redeem Your Mogu Mogu Prize!","mogu":"MOGU","levelTitle1":"SILVER","levelTitle2":"GOLD","levelTitle3":"PLATINUM","levelSubtitle1":"1 - 15 points","levelSubtitle2":"16 - 30 points","levelSubtitle3":"from 30 points","levelDesc1":"Enjoy Mogu Mogu’s e-Vouchers and discounts with a just handful of points!","levelDesc2":"Level up your prizes to our exclusive souvenirs. Guarantee to be worth every point!","levelDesc3":"Reach for the sky where our top rewards fly. Be the one who will successfully climb up!","faq":{"1":{"question":"What is Mogu Campaign?","answer":"We believe in recognizing and rewarding our valued customers for their loyalty and support. That\'s why we\'re excited to introduce our Gift Rewards program, designed to show our appreciation and enhance your shopping experience.\u003cbr /\u003e\u003cbr /\u003eHow It Works:\u003cbr /\u003e \u0026centerdot; Earn Points: Every time you shop with us, you\'ll earn points that can be redeemed for exciting rewards. Points are automatically credited to your account for eligible purchases.\u003cbr /\u003e \u0026centerdot; Redeem Rewards: Once you\'ve accumulated enough points, you can redeem them for a variety of fantastic rewards. Choose from a selection of gift cards, merchandise, exclusive discounts, or even special experiences."},"2":{"question":"Promotion period","answer":"South Korea\u003cbr /\u003eComing Soon\u003cbr /\u003e\u003cbr /\u003ePhilippines\u003cbr /\u003eStart from 1 March - 31 July 2025\u003cbr /\u003e\u003cbr /\u003eUnited Kingdom\u003cbr /\u003eStart from 1 August 2024 - 31 July 2025\u003cbr /\u003e\u003cbr /\u003eIndia\u003cbr /\u003e1 March - 31 July 2025\u003cbr /\u003e\u003cbr /\u003eUSA \u003cbr /\u003eStart from 1 October - 31 December 2024\u003cbr /\u003e\u003cbr /\u003eFrance \u003cbr /\u003eStart from 1 May 2025 - 31 July 2025\u003cbr /\u003e\u003cbr /\u003eIndonesia\u003cbr /\u003eComing Soon"},"3":{"question":"How to join this promotion? / How do I get points?","answer":"Step 1 : Buy Mogu Mogu 320 ml and 1000 ml in available channels nationwide during the campaign.\u003cbr /\u003eStep 2 : Register as participant through website: mogumogu.com or scan QR code on the bottle. Collect points by encoding the unique number under Mogu Mogu caps into the system.\u003cbr /\u003eStep 3 : Use point to get rewards."},"4":{"question":"How long do the collected points active ?","answer":"All collected points will still be active throughout the campaign period."},"5":{"question":"How many types of reward?","answer":"2 types of rewards \u003cbr /\u003eType 1 : Point Redemption, you can use points to redeem rewards with requirement.   \u003cbr /\u003eType 2 : Top Leaderboard rewards are earned by collecting points to achieve the top 1-3 highest points."},"6":{"question":"How to get point redemption reward ? / How do I use points to redeem rewards?","answer":"You have to collect point as requirement of rewards into our system and use points to redeem rewards. \u003cbr /\u003e  However, All rewards privileges are limited throughout the campaign period or until the rewards run out with first come first served basis.\u003cbr /\u003e User will get online rewards as coupon or E-Voucher via Email."},"7":{"question":"Where and how to claim prizes?","answer":"The winner will get online reward via our system or the major prizes will be sent to Email of the winners."},"8":{"question":"Which product will have a code to collect points?","answer":"MOGU MOGU 320 ml and 1,000 ml."},"9":{"question":"How many point per 1 cap of Mogu 320 ml and 1000ml","answer":"1 points after filling into the system completed"},"10":{"question":"What if I have trouble accessing the website what should i do?","answer":"You can join the campaign through scaning QR code instead.\u003cbr /\u003e  Or please wait for 10 minutes and then try to access the website again. If the problem persists, you can connect to us via inbox message on our official accounts or email : mogumogu_official@sappe.com to get more information."},"11":{"question":"Point transfer from Mogu Mogu club Philippines","answer":"Upon registering on our new global website, all eligible customers will automatically receive a 20% bonus point transfer from your points accumulated in the previous campaign \u003cbr /\u003e  (5 points from old website = 1 point in mogumogu.com). \u003cbr /\u003e  This bonus serves as our gesture of gratitude for your loyalty and support. \u003cbr /\u003e  \u003cbr /\u003e  Thank you once again for your unwavering support. We look forward to continuing our journey together in the new fun-filled Mogu Mogu campaign. Let’s have a fun-filled day with Mogu Mogu"}}},"ourStory":{"ourFunStory":"OUR FUN STORY","sipChewFeel":"Sip Chew Feel\u003cbr /\u003e Mogu Mogu","sipThenSnack":"SIP THEN\u003cbr class=\\"block md:hidden\\" /\u003e SNACK","moguMoguSparks":"MOGU MOGU SPARKS A\u003cbr class=\\"block md:hidden\\" /\u003e CULTURE OF BOUNDLESS\u003cbr /\u003e CURIOSITY IN EVERY BITE","feelMoguMogu":"Feel Mogu Mogu THE\u003cbr /\u003e WORLDWIDE DELIGHTS","moguIsNow":"MOGU MOGU IS NOW \u003cbr class=\\"md:hidden\\" /\u003e ROCKING THE WORLD WITH \u003cbr class=\\"md:hidden\\" /\u003e\u003cstrong\u003e MORE \u003cbr class=\\"hidden md:block\\" /\u003e THAN 90 COUNTRIES \u003cbr class=\\"md:hidden\\" /\u003e SELLING WORLDWIDE.\u003c/strong\u003e IT IS \u003cbr class=\\"md:hidden\\" /\u003e \u003cbr class=\\"hidden md:block\\" /\u003e WELCOMED FROM EVERY \u003cbr class=\\"md:hidden\\" /\u003e REGIONS, CULTURES, OR \u003cbr class=\\"md:hidden\\" /\u003e EVEN \u003cbr class=\\"hidden md:block\\" /\u003e MILITARY AROUND THE \u003cbr class=\\"md:hidden\\" /\u003e WORLD.","quenchWithRefreshingZest":"QUENCH WITH \u003cbr /\u003e REFRESHING \u003cbr class=\\"md:hidden\\" /\u003e ZEST","moguUnique":"Mogu Mogu gives a unique \u003cbr class=\\"md:hidden\\" /\u003e different sensation of \u003cbr class=\\"hidden md:block\\" /\u003e fruit \u003cbr class=\\"md:hidden\\" /\u003e juice with smooth blending of \u003cbr class=\\"md:hidden\\" /\u003e Nata de Coco. \u003cbr class=\\"hidden md:block\\" /\u003e Nata de Coco, \u003cbr class=\\"md:hidden\\" /\u003e produced by pure coconut \u003cbr class=\\"md:hidden\\" /\u003e water \u003cbr class=\\"hidden md:block\\" /\u003e fermentation, our Nata \u003cbr class=\\"md:hidden\\" /\u003e de Coco not only gives a\u003cbr class=\\"md:hidden\\" /\u003e \u003cbr class=\\"hidden md:block\\" /\u003e distinctive chewy texture and \u003cbr class=\\"md:hidden\\" /\u003e taste, but also makes \u003cbr class=\\"hidden md:block\\" /\u003e every \u003cbr class=\\"md:hidden\\" /\u003e sip an extraordinary \u003cbr class=\\"md:hidden\\" /\u003e refreshing and fun \u003cbr class=\\"hidden md:block\\" /\u003e drinking \u003cbr class=\\"md:hidden\\" /\u003e experience.","haveAChew":"Have a Chew Today!","nowAvailableStores":"Now available in stores near you \u003cbr /\u003e or order online for fast and \u003cbr class=\\"md:hidden\\" /\u003e convenient delivery!"},"moguWorld":{"moguMogu":"#MOGUMOGU","discover":"DISCOVER OUR JOYFUL MOMENTS,\\nANYWHERE, ANYTIME!","whatsNew":"WHAT’S NEW?"},"templates":{"earnFromUs":{"moguMoguPoint":"MOGU MOGU \u003cspan class=\\"font-normal\\"\u003ePOINT\u003c/span\u003e","comeWithUs":"Join the Mogu Mogu Fun!","turnPoints":"Mogu Mogu is more than just a Nata de Coco drink – it’s all about fun and excitement! We’re inviting you to be part of our special campaigns and activities. Don’t miss out on the chance to win awesome prizes by enjoying your favorite drink, collecting points, and getting involved in fun challenges. Ready for some Mogu Mogu fun? Join now!"},"knowMore":{"needToKnow":"Need to know us more ? Here we are !","followUs":"Follow us on social media"}},"news":{"newsActivities":"News / Activities","getUpdates":"Get updates \u003cbr class=\\"block md:hidden\\" /\u003e from MOGU \u003cbr class=\\"block md:hidden\\" /\u003e MOGU \u003cbr class=\\"hidden md:block\\" /\u003e around \u003cbr class=\\"block md:hidden\\" /\u003e the world","moguWorld":"MOGU MOGU WORLD","discover":"Discover our joyful moments, \u003cbr class=\\"block md:hidden\\" /\u003eanywhere, anytime!"},"contact":{"contactUs":"Contact us","letUsKnow":"Let us know \u003cbr class=\\"block md:hidden\\" /\u003e how we \u003cbr class=\\"hidden md:block\\" /\u003e can \u003cbr class=\\"block md:hidden\\" /\u003e help you","customerService":"Customer \u003cbr class=\\"block md:hidden\\" /\u003e service","customerServiceDesc":"We value our customers and our \u003cbr class=\\"block md:hidden\\" /\u003e communities. We appreciate your \u003cbr /\u003e questions, comments and feedback so \u003cbr class=\\"block md:hidden\\" /\u003e we can better serve you.","globalMedia":"Global Media Contacts","globalSocial":"Global Social Media :","faq":"FAQ","anyQuestions":"Any Questions? Here’s Answers","otherStores":"Other Stores","onlineStore":"Online store with our partners","weAreNear":"We\'re near than you know."},"content-offer":{"contactUs":"Offer content #mogumogu","letUsKnow":"SHARE YOUR \u003cbr class=\\"hidden md:block\\" /\u003eJOYFUL MOMENTS, \u003cbr class=\\"hidden md:block\\" /\u003eON MOGUMOGU.COM","customerService":"Content \u003cbr class=\\"block md:hidden\\" /\u003e Submission","customerServiceDesc":"We value our customers \u003cbr class=\\"block md:hidden\\" /\u003eand our communities. \u003cbr/\u003eWe are excited to see your content \u003cbr class=\\"block md:hidden\\" /\u003eand display it on our website.","globalMedia":"Global Media Contacts","faq":"FAQ","anyQuestions":"Any Questions? Here’s Answers","otherStores":"Other Stores","onlineStore":"Online store with our partners","weAreNear":"We\'re near than you know."},"products":{"ourProducts":"Our Products","discoverYourTaste":"DISCOVER YOUR\u003cbr /\u003e TASTE","available":"Available in 24 different flavors"},"products-detail":{"flavor":"Flavor","size":"Size","pack":"Pack","subtotal":"Subtotal","detail":"Detail","ingredients":"Ingredients","nutrition":"Nutrition Facts","customerReviews":"CUSTOMER REVIEWS","recommendation":"Recommendation for you"},"news-detail":{"whatsNew":"What\'s New?","viewAll":"View All"},"forgetpassword":{"forget":"Forgot Password","email":"Email","please":"Please enter your email in the box above. We will send you the link to reset your password.","reset":"Reset Password","back":"Back to sign in","link-sent":"A Link Has Been Sent","link-sent-check":"The link to reset your password has been sent to {email}. Please check your inbox for confirmation."},"login":{"login":"Login","earn":"Earn \u0026 burn your points here","email":"Email","password":"Password","forget":"Forgot your password ?","reset":"Reset password","sign-in":"Sign In","or-sign-in":"or sign in with","no-account":"Don\'t have an account ?","sign-up":"Sign Up"},"reward-getPoints":{"codeUnder":"Code Under the Cap","submitCodeForEarn":"Submit code and earn points","redemmPoints":"Redeem points from the codes found under the caps to claim Mogu Mogu’s superior prizes. Catch up with us and seize the opportunity!","digicodes":"Digit codes","add":"Add\u003cspan class=\\"absolute left-[30px] top-[14px] text-[36px] font-normal\\"\u003e+\u003c/span\u003e","submitCode":"Submit Code"},"reward-history":{"history":"History","month":"Month","year":"Year"},"reward-myRewards":{"myRewards":"My Rewards","inProgress":"In Progress","recived":"Received","trackStatus":"Track status"},"reward-leaderboard":{"leaderboard-title":"LEADERBOARD","note":"In case of a tie, priority will be given to the user who entered the code first in determining the ranking.\u003cbr /\u003e This event may be subject to change or end prematurely without prior notice due to company circumstances."},"reward-profile":{"profile":"Profile","edit-profile-pic":"Edit profile picture","personal":"Personal Info","edit":"Edit","name":"Name","yob":"Year of birth","gender":"Gender","phone":"Phone number","addr":"Address","number":"Number","alley":"Alley","street":"Street","postcode":"Postal Code","state":"State","city":"City","country":"Country/Region","cancel":"Cancel","save":"Save","account":"Account","email":"Email address","security":"Security","change-password":"Change Password","password":"Password","email-subscribe":"Email Subscriptions","accept-news":"I would like to receive emails about news \u0026 activities","accept-offer":"I would like to receive campaign content, special offers, and other updates","accept-track":"I would like to receive tracking status after redeem reward","confirm-edit":"Please Confirm Your Edit","changed":"Your information has been changed.","please-click":"Please click “Confirm” to update your new information","confirm":"Confirm"},"reward-redeemRewards":{"phone":"Phone number","additionalInfo":"Additional Info\u003cbr class=\\"block md:hidden\\" /\u003e for Us","addMorePersonal":"Add more personal info for\u003cbr class=\\"block md:hidden\\" /\u003e convenient delivery","dueToTheNeed":"Due to the need for accurate delivery\u003cbr class=\\"block md:hidden\\" /\u003e of prizes, we therefore ask you to fill in\u003cbr /\u003e your address information truthfully.","address":"Address","number":"Number","alley":"Alley","street":"Street","postalCode":"Postal code","countryRegion":"Country/Region","state":"State","city":"City","confirmYourRedemption":"Confirm Your Redemption","youAreAboutToRedeem":"You are about to redeem \u003cspan class=\\"text-red-500\\"\u003e{points} points\u003c/span\u003e \u003cbr class=\\"block md:hidden\\" /\u003e for {reward}. \u003cbr /\u003e By clicking “Confirm” below, you agree \u003cbr class=\\"block md:hidden\\" /\u003e to accept Terms of Use \u0026 Condition of \u003cbr class=\\"block md:hidden\\" /\u003e Mogu Mogu rewards.","yourPoints":"Your points","redemption":"Redemption","amountBalance":"Amount \u003cbr class=\\"block md:hidden\\" /\u003e balance","yourRedemption":"Your redemption \u003cbr class=\\"block md:hidden\\" /\u003e has been\u003cbr /\u003e successful!","getTheSpecialReward":"Get the Special Reward!","redeemYourPoints":"Redeem your points as you wish here."},"signup":{"sign-up":"Sign Up","personal":"Personal Info","name":"Name","yob":"Date of birth","gender":"Gender","contact":"Contact Info","phone":"Phone number","email":"Email Address","password":"Password","confirm-password":"Confirm password","term":"Term of Use","or":"or continue with","have-account":"Already have an account ?","sign-in":"Sign In","success":"Thank you for signing up.\\nYour account has been successfully created. ","welcome":"Welcome to the Mogu Mogu world! Let’s kick off by updating your profile or browsing through our exciting content. Feel free to reach out to our support team if you need assistance.","view-profile":"View Your Profile","sign-failed":"Sign up failed.","sign-failed-desc":"Please try again later."},"privacy":{"privacy-policy":"Privacy Policy for Customer","intro":"Sappe Public Company Limited. recognizes the importance of the protection of your personal data. This Privacy Policy explains our practices regarding the collection, use or disclosure of personal data including other rights of the Data Subjects in accordance with the Personal Data Protection Laws."},"contactForm":{"inquiry":"Inquiry Type","choose":"Choose one ...","membership":"Membership","campaign":"Campaign","product":"Product","personal":"Personal Info","name":"Name","email":"Email","message":"message","tellUs":"Tell us, what\'s your mind","submit":"Submit message"},"error":{"404":{"title":"404 - Page not found","message":"The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.","back":"Go back to Home"},"500":{"title":"500 - Internal server error","message":"The server encountered an internal error or misconfiguration and was unable to complete your request.","back":"Go back to Home"}},"gameSpecial":{"title":"Spin and Win the prizes in  YOU GOTTA EARN 2025","earnDesc":"Play now to get exclusive rewards!","buttonPlayGame":"Play Game","buttonRedeem":"Claim your chance","category":"Categories","termsAndPolicy":"Terms and Policy","learnMore":"Learn More"},"luckyDraw":{"turnstileError":"Please check the turnstile.","turnstileErrorDesc":"Please check the turnstile again.","requiredRedeem":"You can redeem this reward 100 time(s).","placholderAmountRedeem":"Amount","redeemTransaction":"Making Trasaction","cancelRedeem":"No, Go Back","buttonConfirm":"Submit.","redeemTitle":"Select Amount to Redeem","redeemName":"You are about to redeem","redeemPoints":"You’re redeeming","redeemReward":"poins for this reward.","winnerGz":"Congratulations! You are one of our lucky winners!","loserGz":"Unfortunately, you didn’t win this time.","redeemSuccessfully":"You have successfully joined the ","redeemNotJoin":"You haven\'t joined the ","details":"Details :","resultAnnouncementDate":"Result Announcement Date:","eventStartIn":"Event start in:","campaignPeriod":"Campaign period:","ticketRedeem":"Used Entries:","eventStatus":"Event Status:","winners":"Winners:","reward":"Rewards:","redeemSuccess":"Redeemed Successfully.","redeemSuccessDesc":"You can see your reward in the menu “Rewards”.","redeemFailed":"Redeemed Failed.","redeemFailedDesc":"Please try again later.","redeem":"Redeem","viewMore":"View More","redeemDate":"Redeem Date:","event":"Event:","ended":"Ended","inProgress":"In Progress","titleReward":"Get the Special Reward","rewardDetail":"These are some of the prizes you may receive when you redeem points to join this event.","howItWorks":"How It Works","stepOne":"Use your account balance points to join the draw.","stepTwo":"Each week brings new prizes to win!.","stepThree":"Winners announced every","checkYourPoints":"Check your points and enter now!","week":"Week","myRewardsLuckyDraw":"My Rewards Lucky Draw","myRewardsSpin":"My Rewards Instant Win","rewardType":"Reward type","dueToTheNeed":"Due to the need for accurate delivery of prizes, we therefore ask you to fill in your address information truthfully."}},"children":["$","$L10",null,{"children":["$","$L9",null,{"parallelRouterKey":"children","segmentPath":["children","$11","children"],"error":"$12","errorStyles":[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/d147f630ca6299bf.css","precedence":"next","crossOrigin":"$undefined"}]],"errorScripts":[],"template":["$","$La",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","notFoundStyles":"$undefined","styles":[["$","link","0",{"rel":"stylesheet","href":"/_next/static/css/d147f630ca6299bf.css","precedence":"next","crossOrigin":"$undefined"}],["$","link","1",{"rel":"stylesheet","href":"/_next/static/css/3b032f32ecab31cf.css","precedence":"next","crossOrigin":"$undefined"}]]}]}]}]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([
+        1,
+        'b:[["$","meta","0",{"name":"viewport","content":"width=device-width, initial-scale=1"}],["$","meta","1",{"charSet":"utf-8"}],["$","title","2",{"children":"Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu"}],["$","meta","3",{"name":"description","content":"Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"}],["$","link","4",{"rel":"manifest","href":"/manifest.json","crossOrigin":"use-credentials"}],["$","meta","5",{"name":"keywords","content":"Mogu Mogu, drinking, Nata de Coco, fresh, fruit, juice, chew, low sugar, healthy"}],["$","meta","6",{"name":"robots","content":"index, follow"}],["$","link","7",{"rel":"canonical","href":"https://www.mogumogu.com"}],["$","link","8",{"rel":"alternate","hrefLang":"fr","href":"https://www.mogumogu.com/fr"}],["$","link","9",{"rel":"alternate","hrefLang":"ko","href":"https://www.mogumogu.com/kr"}],["$","link","10",{"rel":"alternate","hrefLang":"id","href":"https://www.mogumogu.com/id"}],["$","link","11",{"rel":"alternate","hrefLang":"en","href":"https://www.mogumogu.com"}],["$","link","12",{"rel":"alternate","hrefLang":"x-default","href":"https://www.mogumogu.com"}],["$","meta","13",{"property":"og:title","content":"Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu"}],["$","meta","14",{"property":"og:description","content":"Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"}],["$","meta","15",{"property":"og:url","content":"https://www.mogumogu.com"}],["$","meta","16",{"property":"og:site_name","content":"Mogu Mogu - Nata De Coco Drink"}],["$","meta","17",{"property":"og:image","content":"https://www.mogumogu.com/assets/img/pages/home/showcase-jun-02-mb.png"}],["$","meta","18",{"property":"og:image:width","content":"800"}],["$","meta","19",{"property":"og:image:height","content":"600"}],["$","meta","20",{"property":"og:image:alt","content":"Home | Mogu Mogu"}],["$","meta","21",{"property":"og:image","content":"https://www.mogumogu.com/assets/img/pages/home/showcase-jun-04-dt.png"}],["$","meta","22",{"property":"og:image:width","content":"1800"}],["$","meta","23",{"property":"og:image:height","content":"1600"}],["$","meta","24",{"property":"og:image:alt","content":"Home | Mogu Mogu"}],["$","meta","25",{"name":"twitter:card","content":"summary_large_image"}],["$","meta","26",{"name":"twitter:title","content":"Nata de Coco Drink Enjoyed Worldwide - Official Mogu Mogu"}],["$","meta","27",{"name":"twitter:description","content":"Mogu Mogu - The world’s favorite nata de coco drink! Enjoy the perfect blend of chewy coconut jelly and refreshing fruit juice. Discover more and join the fun—click now!"}],["$","meta","28",{"name":"twitter:image","content":"https://www.mogumogu.com/assets/img/pages/home/showcase-jun-02-mb.png"}],["$","meta","29",{"name":"twitter:image:width","content":"800"}],["$","meta","30",{"name":"twitter:image:height","content":"600"}],["$","meta","31",{"name":"twitter:image:alt","content":"Home | Mogu Mogu"}],["$","meta","32",{"name":"twitter:image","content":"https://www.mogumogu.com/assets/img/pages/home/showcase-jun-04-dt.png"}],["$","meta","33",{"name":"twitter:image:width","content":"1800"}],["$","meta","34",{"name":"twitter:image:height","content":"1600"}],["$","meta","35",{"name":"twitter:image:alt","content":"Home | Mogu Mogu"}],["$","link","36",{"rel":"apple-touch-icon","href":"/favicon/apple-icon.png"}]]\n'
+      ])
+    </script>
+    <script>
+      self.__next_f.push([1, '6:null\n'])
+    </script>
+  </body>
 </html>
