@@ -118,6 +118,31 @@
       color: var(--primary-color);
       margin-bottom: 15px;
       font-size: 1.1rem;
+      gap: 12px;
+    }
+
+    /* New: split control inside top bar */
+    .split-control {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .split-control input[type="number"] {
+      width: 72px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 13px;
+    }
+    .split-control button {
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent-color), #ff6a45);
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .counter-group {
@@ -131,6 +156,16 @@
       display: flex;
       align-items: center;
       gap: 5px;
+    }
+
+    /* small clear button at top-right of box */
+    .clear-small {
+      margin-left: 8px;
+      background: transparent;
+      border: none;
+      color: var(--accent-color);
+      cursor: pointer;
+      font-size: 1rem;
     }
 
     .container {
@@ -191,6 +226,11 @@
       border: 1px solid rgba(0,0,0,0.05);
     }
 
+    /* used for split result boxes: make them wider */
+    #splitResults .result-box {
+      width: 48%;
+    }
+
     .result-box:hover {
       transform: translateY(-2px);
       box-shadow: 0 15px 30px rgba(0,0,0,0.12);
@@ -204,6 +244,7 @@
       align-items: center;
       color: var(--primary-color);
       font-size: 1.1rem;
+      gap: 8px;
     }
 
     .result-content {
@@ -218,6 +259,18 @@
       font-size: 13px;
       line-height: 1.5;
       box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .duplicate-list {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #c0392b;
+      background: rgba(255, 230, 230, 0.8);
+      padding: 8px;
+      border-radius: 8px;
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
     }
 
     .controls, .checkboxes {
@@ -362,6 +415,8 @@
       .result-container {
         flex-direction: column;
       }
+      .section-header { flex-wrap: wrap; gap: 8px; }
+      .split-control { margin-top: 6px; }
     }
 
     /* Animation for compare button */
@@ -388,16 +443,29 @@
     <div class="section">
       <div class="section-header">
         <span>List A</span>
-        <div class="counter-group">
-          <span title="Duplicate count">🧹 <span id="dupA">0</span></span>
-          <span title="Total items">📊 <span id="countA">0</span></span>
+
+        <!-- Split control placed in top bar as requested -->
+        <div class="split-control" title="Split from top">
+          <input id="splitA" type="number" min="0" placeholder="Split N">
+          <button onclick="splitList('listA','splitA')" title="Split from top">✂</button>
+        </div>
+
+        <!-- counters + clear small -->
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="counter-group">
+            <span title="Duplicate count">🧹 <span id="dupA">0</span></span>
+            <span title="Total items">📊 <span id="countA">0</span></span>
+          </div>
+          <button class="clear-small" onclick="clearList('listA')" title="Clear List A">✖</button>
         </div>
       </div>
+
       <textarea id="listA" placeholder="Enter items for List A, one per line..." oninput="updateCount('A')"></textarea>
       <div class="section-controls">
         <button onclick="deduplicate('listA')" title="Remove Duplicates">🧹 De-Duplicate</button>
         <button onclick="sortList('listA')" title="Sort Asc/Desc">⇅ Sort</button>
-        <button onclick="reverseList('listA')" title="Reverse Order">🔁 Reverse</button>
+        <!-- changed Reverse to Shuffle as requested -->
+        <button onclick="shuffleList('listA')" title="Shuffle Order">🔀 Shuffle</button>
         <button onclick="copyText('listA')" title="Copy List A">📋 Copy</button>
       </div>
     </div>
@@ -405,20 +473,33 @@
     <div class="section">
       <div class="section-header">
         <span>List B</span>
-        <div class="counter-group">
-          <span title="Duplicate count">🧹 <span id="dupB">0</span></span>
-          <span title="Total items">📊 <span id="countB">0</span></span>
+
+        <div class="split-control" title="Split from top">
+          <input id="splitB" type="number" min="0" placeholder="Split N">
+          <button onclick="splitList('listB','splitB')" title="Split from top">✂</button>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;">
+          <div class="counter-group">
+            <span title="Duplicate count">🧹 <span id="dupB">0</span></span>
+            <span title="Total items">📊 <span id="countB">0</span></span>
+          </div>
+          <button class="clear-small" onclick="clearList('listB')" title="Clear List B">✖</button>
         </div>
       </div>
+
       <textarea id="listB" placeholder="Enter items for List B, one per line..." oninput="updateCount('B')"></textarea>
       <div class="section-controls">
         <button onclick="deduplicate('listB')" title="Remove Duplicates">🧹 De-Duplicate</button>
         <button onclick="sortList('listB')" title="Sort Asc/Desc">⇅ Sort</button>
-        <button onclick="reverseList('listB')" title="Reverse Order">🔁 Reverse</button>
+        <button onclick="shuffleList('listB')" title="Shuffle Order">🔀 Shuffle</button>
         <button onclick="copyText('listB')" title="Copy List B">📋 Copy</button>
       </div>
     </div>
   </div>
+
+  <!-- split results are hidden until user clicks Split -->
+  <div id="splitResults" class="result-container" style="display:none;margin-top:18px;"></div>
 
   <div class="checkboxes">
     <label><input type="checkbox" id="ignoreCase"> Ignore Case</label>
@@ -429,7 +510,7 @@
     <button onclick="compareAll()" id="compareBtn">🔍 Compare Lists</button>
   </div>
 
-  <div class="result-container">
+  <div class="result-container" style="margin-top:18px;">
     <div class="result-box">
       <div class="result-header">A Only <span id="countOnlyA">0</span>
         <button onclick="copySection('resultOnlyA')" title="Copy A Only">📋 Copy</button>
@@ -454,6 +535,9 @@
     let sortState = { listA: 'asc', listB: 'asc' };
     let nightMode = false;
 
+    // splitData holds the current split halves so split-box actions can operate without touching original textareas
+    let splitData = { first: [], rest: [], sourceId: '' };
+
     function parseList(id) {
       const trim = document.getElementById('trimValues').checked;
       let lines = document.getElementById(id).value.split(/\r?\n/);
@@ -474,6 +558,7 @@
       const textarea = document.getElementById('list' + which);
       const lines = textarea.value.split(/\r?\n/).filter(s => s.trim().length > 0);
       const unique = new Set(lines.map(s => document.getElementById('ignoreCase').checked ? s.toLowerCase() : s));
+      // keep original count elements (these exist in the file)
       document.getElementById('count' + which).innerText = lines.length;
       document.getElementById('dup' + which).innerText = lines.length - unique.size;
     }
@@ -513,7 +598,7 @@
         btn.innerHTML = '✓ Copied!';
         setTimeout(() => {
           btn.innerHTML = originalText;
-        }, 2000);
+        }, 1500);
       });
     }
 
@@ -533,28 +618,185 @@
       if (current === 'desc') lines.reverse();
       sortState[id] = current === 'asc' ? 'desc' : 'asc';
       area.value = lines.join('\n');
+      updateCount(id === 'listA' ? 'A' : 'B');
     }
 
-    function reverseList(id) {
+    // replaced reverseList with shuffleList (keeps original functionality but shuffles)
+    function shuffleList(id) {
       const area = document.getElementById(id);
-      const lines = area.value.split(/\r?\n/).filter(s => s.trim().length > 0).reverse();
+      let lines = area.value.split(/\r?\n/).filter(s => s.trim().length > 0);
+      for (let i = lines.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [lines[i], lines[j]] = [lines[j], lines[i]];
+      }
       area.value = lines.join('\n');
+      updateCount(id === 'listA' ? 'A' : 'B');
     }
 
     function copyText(id) {
       const text = document.getElementById(id).value;
       navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector(`#${id}`).nextElementSibling.querySelector(`button[title^="Copy"]`);
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '✓ Copied!';
+        // find the copy button next to the textarea controls and flash it
+        const section = document.getElementById(id).parentElement;
+        const btns = section.querySelectorAll('.section-controls button');
+        // last button is copy in each section in original layout
+        const copyBtn = btns[btns.length - 1];
+        const originalText = copyBtn.innerHTML;
+        copyBtn.innerHTML = '✓ Copied!';
         setTimeout(() => {
-          btn.innerHTML = originalText;
-        }, 2000);
+          copyBtn.innerHTML = originalText;
+        }, 1500);
       });
+    }
+
+    function clearList(id) {
+      document.getElementById(id).value = '';
+      updateCount(id === 'listA' ? 'A' : 'B');
+      // also hide split results if they came from this list
+      if (splitData.sourceId === id) {
+        document.getElementById('splitResults').style.display = 'none';
+        splitData = { first: [], rest: [], sourceId: '' };
+      }
+    }
+
+    // SPLIT FEATURES
+    function splitList(listId, splitInputId) {
+      const rawInput = document.getElementById(splitInputId).value;
+      const qty = parseInt(String(rawInput).trim(), 10);
+      if (isNaN(qty) || qty < 0) {
+        alert('Please enter a valid non-negative number to split.');
+        return;
+      }
+      const trim = document.getElementById('trimValues').checked;
+      // get original lines but apply trim option (do not force ignoreCase here to preserve original values)
+      let lines = document.getElementById(listId).value.split(/\r?\n/);
+      lines = lines.filter(s => (trim ? s.trim().length > 0 : s.length > 0));
+      if (trim) lines = lines.map(s => s.trim());
+
+      // allow qty larger than length by clamping
+      const qtyAdj = Math.max(0, Math.min(qty, lines.length));
+      const first = lines.slice(0, qtyAdj);
+      const rest = lines.slice(qtyAdj);
+
+      splitData.first = first.slice();
+      splitData.rest = rest.slice();
+      splitData.sourceId = listId;
+
+      renderSplitResults(first, rest, qtyAdj, lines.length);
+    }
+
+    function renderSplitResults(first, rest, qty, total) {
+      const container = document.getElementById('splitResults');
+      const dupFirst = getDuplicateValues(first);
+      const dupRest = getDuplicateValues(rest);
+
+      container.innerHTML = `
+        <div class="result-box">
+          <div class="result-header">
+            <div>First ${qty} &nbsp;<small style="font-weight:400;color:#666"> (cut from top)</small></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="copySplitFirst" title="Copy first">📋 Copy</button>
+              <button id="dedupSplitFirst" title="De-duplicate first">🧹 De-Dup</button>
+            </div>
+          </div>
+          <div class="result-content" id="splitFirstContent"></div>
+          <div id="splitFirstDups" class="duplicate-list" style="${dupFirst.length? 'display:block;' : 'display:none;'}">
+            <strong>Duplicates (${dupFirst.length}):</strong>
+            <div id="splitFirstDupsList">${dupFirst.join('\\n')}</div>
+          </div>
+        </div>
+
+        <div class="result-box">
+          <div class="result-header">
+            <div>Remaining ${rest.length} &nbsp;<small style="font-weight:400;color:#666">(out of ${total})</small></div>
+            <div style="display:flex;gap:8px;align-items:center">
+              <button id="copySplitRest" title="Copy remaining">📋 Copy</button>
+              <button id="dedupSplitRest" title="De-duplicate remaining">🧹 De-Dup</button>
+            </div>
+          </div>
+          <div class="result-content" id="splitRestContent"></div>
+          <div id="splitRestDups" class="duplicate-list" style="${dupRest.length? 'display:block;' : 'display:none;'}">
+            <strong>Duplicates (${dupRest.length}):</strong>
+            <div id="splitRestDupsList">${dupRest.join('\\n')}</div>
+          </div>
+        </div>
+      `;
+
+      // set contents as text (preserves newlines)
+      document.getElementById('splitFirstContent').innerText = first.join('\n');
+      document.getElementById('splitRestContent').innerText = rest.join('\n');
+
+      // wire up buttons
+      document.getElementById('copySplitFirst').addEventListener('click', function(){
+        copySplit('first');
+      });
+      document.getElementById('copySplitRest').addEventListener('click', function(){
+        copySplit('rest');
+      });
+      document.getElementById('dedupSplitFirst').addEventListener('click', function(){
+        dedupSplit('first');
+      });
+      document.getElementById('dedupSplitRest').addEventListener('click', function(){
+        dedupSplit('rest');
+      });
+
+      container.style.display = 'flex';
+    }
+
+    function getDuplicateValues(arr) {
+      const freq = {};
+      arr.forEach(s => { freq[s] = (freq[s] || 0) + 1; });
+      return Object.keys(freq).filter(k => freq[k] > 1);
+    }
+
+    function copySplit(which) {
+      const arr = which === 'first' ? splitData.first : splitData.rest;
+      navigator.clipboard.writeText(arr.join('\n')).then(() => {
+        const btnId = which === 'first' ? 'copySplitFirst' : 'copySplitRest';
+        const btn = document.getElementById(btnId);
+        const original = btn.innerText;
+        btn.innerText = '✓ Copied!';
+        setTimeout(()=> btn.innerText = original, 1500);
+      });
+    }
+
+    function dedupSplit(which) {
+      if (which === 'first') {
+        splitData.first = Array.from(new Set(splitData.first));
+        document.getElementById('splitFirstContent').innerText = splitData.first.join('\n');
+        const dupList = getDuplicateValues(splitData.first);
+        const dupsEl = document.getElementById('splitFirstDups');
+        const dupsListEl = document.getElementById('splitFirstDupsList');
+        if (dupList.length) {
+          dupsEl.style.display = 'block';
+          dupsListEl.innerText = dupList.join('\n');
+        } else {
+          dupsEl.style.display = 'none';
+          dupsListEl.innerText = '';
+        }
+        const btn = document.getElementById('dedupSplitFirst');
+        const orig = btn.innerText; btn.innerText = '✓ Done'; setTimeout(()=>btn.innerText=orig,1200);
+      } else {
+        splitData.rest = Array.from(new Set(splitData.rest));
+        document.getElementById('splitRestContent').innerText = splitData.rest.join('\n');
+        const dupList = getDuplicateValues(splitData.rest);
+        const dupsEl = document.getElementById('splitRestDups');
+        const dupsListEl = document.getElementById('splitRestDupsList');
+        if (dupList.length) {
+          dupsEl.style.display = 'block';
+          dupsListEl.innerText = dupList.join('\n');
+        } else {
+          dupsEl.style.display = 'none';
+          dupsListEl.innerText = '';
+        }
+        const btn = document.getElementById('dedupSplitRest');
+        const orig = btn.innerText; btn.innerText = '✓ Done'; setTimeout(()=>btn.innerText=orig,1200);
+      }
     }
 
     // Initialize with some example data
     window.onload = function() {
+      // keep original behavior (start empty)
       document.getElementById('listA').value = "";
       document.getElementById('listB').value = "";
       updateCount('A');
