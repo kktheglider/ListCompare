@@ -17,6 +17,14 @@
   <a href="#privacy">Privacy</a>
 </p>
 
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/dependencies-none-brightgreen" alt="No dependencies">
+  <img src="https://img.shields.io/badge/single%20file-~34%20KB-blue" alt="Single file, ~34 KB">
+  <img src="https://img.shields.io/badge/data-100%25%20local-0d9488" alt="100% local">
+  <a href="https://github.com/kktheglider/ListCompare/stargazers"><img src="https://img.shields.io/github/stars/kktheglider/ListCompare?style=social" alt="GitHub stars"></a>
+</p>
+
 ---
 
 Paste two lists and instantly see how they overlap: what's **in both**, what's **only in A**, what's
