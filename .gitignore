@@ -1,0 +1,10 @@
+# vercel project link (local, machine-specific)
+.vercel
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# node (not used, but just in case)
+node_modules/

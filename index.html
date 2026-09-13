@@ -1,807 +1,468 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>List Compare by KK</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📋</text></svg>">
-  <style>
-    :root {
-      --primary-color: #4a6fa5;
-      --secondary-color: #6b8cae;
-      --accent-color: #ff7e5f;
-      --light-bg: #f8f9fa;
-      --dark-bg: #1a1e23;
-      --text-light: #333;
-      --text-dark: #f0f0f0;
-      --card-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      --transition: all 0.3s ease;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>List Compare</title>
+<meta name="description" content="Compare, dedupe, split and analyze two lists — fast, private, in your browser.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><circle cx=%2213%22 cy=%2216%22 r=%2210%22 fill=%22none%22 stroke=%22%235145e6%22 stroke-width=%222.4%22/><circle cx=%2219%22 cy=%2216%22 r=%2210%22 fill=%22none%22 stroke=%22%238b5cf6%22 stroke-width=%222.4%22/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f5fa; --grad1:#e9ecff; --grad2:#f6f2ff;
+  --surface:#ffffff; --surface2:#f4f6fb; --surface3:#eceff6;
+  --border:#e4e8f1; --border2:#d3dae7;
+  --text:#111524; --text2:#414a5e; --text3:#6a7488;
+  --accent:#5145e6; --accent2:#8b5cf6; --accent-weak:#edecfe; --accent-ink:#4a3fd6; --on-accent:#fff;
+  --a:#5145e6; --a-weak:#ecebfe;      /* List A */
+  --b:#c026d3; --b-weak:#fbe8fe;      /* List B */
+  --common:#0d9488; --common-weak:#d7f5f0; /* intersection */
+  --green:#0d8f5b; --red:#d92d20; --red-weak:#fdece9; --amber:#b45309;
+  --blur:rgba(244,245,250,.82);
+  --shadow-sm:0 1px 2px rgba(17,21,36,.05),0 2px 8px rgba(17,21,36,.05);
+  --shadow-md:0 6px 18px rgba(17,21,36,.09),0 1px 3px rgba(17,21,36,.06);
+  --shadow-lg:0 24px 60px rgba(17,21,36,.18);
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --r:12px; --r2:18px;
+}
+:root[data-theme="dark"]{
+  --bg:#090b12; --grad1:#161d33; --grad2:#1a1130;
+  --surface:#141926; --surface2:#1a2130; --surface3:#232c3e;
+  --border:rgba(255,255,255,.09); --border2:rgba(255,255,255,.16);
+  --text:#f2f5fc; --text2:#c3cbdb; --text3:#909bb2;
+  --accent:#7c7bff; --accent2:#a78bfa; --accent-weak:rgba(124,123,255,.16); --accent-ink:#a5a3ff; --on-accent:#0b0e15;
+  --a:#8b8bff; --a-weak:rgba(129,140,248,.16);
+  --b:#e879f9; --b-weak:rgba(232,121,249,.15);
+  --common:#2dd4bf; --common-weak:rgba(45,212,191,.15);
+  --green:#3ee08f; --red:#ff7a70; --red-weak:rgba(255,122,112,.14); --amber:#ffb454;
+  --blur:rgba(9,11,18,.82);
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3); --shadow-md:0 6px 18px rgba(0,0,0,.35); --shadow-lg:0 30px 70px rgba(0,0,0,.6);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{min-height:100%;}
+body{font-family:var(--sans);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;font-size:15px;
+  background:radial-gradient(1200px 640px at 10% -12%,var(--grad1),transparent 55%),
+             radial-gradient(1100px 620px at 110% -6%,var(--grad2),transparent 55%),var(--bg);
+  background-attachment:fixed;min-height:100dvh;padding-bottom:48px;}
+button{font-family:inherit;cursor:pointer;color:inherit;border:none;background:none;}
+textarea{font-family:inherit;}
+[hidden]{display:none!important;}
+.ic{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px;}
 
-    body {
-      font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
-      line-height: 1.6;
-      padding: 20px;
-      background-color: var(--light-bg);
-      color: var(--text-light);
-      transition: var(--transition);
-      max-width: 1400px;
-      margin: 0 auto;
-    }
+/* header */
+.topbar{position:sticky;top:0;z-index:30;background:var(--blur);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);}
+.topbar-in{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:12px;}
+.brand{display:flex;align-items:center;gap:11px;min-width:0;}
+.brand-logo{width:38px;height:38px;flex-shrink:0;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(81,69,230,.28);}
+.brand-logo svg{width:22px;height:22px;stroke:#fff;fill:none;stroke-width:2.2;}
+.brand-name{font-size:18px;font-weight:800;letter-spacing:-.02em;white-space:nowrap;}
+.brand-tag{font-size:12px;color:var(--text3);font-weight:500;}
+.spacer{flex:1;}
+.tbtn{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 14px;border-radius:11px;font-size:14px;font-weight:650;
+  background:var(--surface);border:1.5px solid var(--border2);color:var(--text2);box-shadow:var(--shadow-sm);transition:background .15s,color .15s,transform .05s;}
+.tbtn:hover{background:var(--surface2);color:var(--text);}
+.tbtn:active{transform:translateY(1px);}
+.tbtn.icon{width:42px;padding:0;justify-content:center;}
+@media(max-width:560px){ .tbtn .lbl{display:none;} .tbtn{padding:0;width:42px;justify-content:center;} .brand-tag{display:none;} }
 
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: var(--primary-color);
-      font-weight: 600;
-      font-size: 2.2rem;
-      letter-spacing: -0.5px;
-      position: relative;
-      padding-bottom: 10px;
-    }
+/* hero */
+.hero{text-align:center;padding:30px 0 22px;}
+.hero h1{font-size:clamp(26px,4.5vw,38px);font-weight:800;letter-spacing:-.03em;}
+.hero p{color:var(--text3);margin-top:8px;font-size:15.5px;}
 
-    h2::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 3px;
-      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-      border-radius: 3px;
-    }
+/* input grid */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:820px){ .grid{grid-template-columns:1fr;} }
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow-sm);
+  transition:box-shadow .15s,border-color .15s;display:flex;flex-direction:column;}
+.card:hover{box-shadow:var(--shadow-md);}
+.card-head{display:flex;align-items:center;gap:10px;padding:15px 16px 12px;}
+.dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;}
+.card-title{font-size:16px;font-weight:750;letter-spacing:-.01em;}
+.badges{display:flex;gap:7px;margin-left:auto;align-items:center;}
+.badge{position:relative;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px;
+  background:var(--surface2);color:var(--text2);border:1px solid var(--border);cursor:pointer;transition:background .15s,color .15s;}
+.badge:hover{background:var(--surface3);}
+.badge.dup[data-n]:not([data-n="0"]){background:var(--red-weak);color:var(--red);border-color:transparent;}
+.badge .ic{width:13px;height:13px;}
+.badge::after{content:attr(data-label);position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:var(--surface);color:var(--text);border:1px solid var(--border2);
+  font-size:11.5px;font-weight:650;letter-spacing:.01em;padding:6px 10px;border-radius:9px;
+  white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s,transform .15s;box-shadow:var(--shadow-md);z-index:20;}
+.badge:hover::after,.badge.show::after{opacity:1;transform:translateX(-50%) translateY(-2px);}
+.iconbtn{width:34px;height:34px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:9px;
+  background:var(--surface);border:1px solid var(--border2);color:var(--text3);transition:background .15s,color .15s;}
+.iconbtn:hover{background:var(--surface3);color:var(--text);}
+.iconbtn.danger:hover{background:var(--red-weak);color:var(--red);}
+textarea.ta{width:100%;min-height:230px;resize:vertical;border:none;outline:none;background:transparent;color:var(--text);
+  font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:4px 16px;flex:1;}
+textarea.ta::placeholder{color:var(--text3);font-family:var(--sans);}
+.card.drag{outline:2.5px dashed var(--accent);outline-offset:-6px;background:var(--accent-weak);}
+.card-tools{display:flex;gap:8px;padding:12px 14px;border-top:1px solid var(--border);flex-wrap:wrap;align-items:center;}
+.tool{display:inline-flex;align-items:center;gap:7px;height:38px;padding:0 12px;border-radius:10px;font-size:13px;font-weight:600;
+  background:var(--surface2);border:1px solid var(--border);color:var(--text2);transition:background .15s,color .15s,transform .05s;}
+.tool:hover{background:var(--surface3);color:var(--text);}
+.tool:active{transform:translateY(1px);}
+.tool .ic{width:16px;height:16px;}
+.split-in{width:74px;height:38px;border-radius:10px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);
+  font-family:var(--mono);font-size:13px;text-align:center;outline:none;transition:border-color .15s,box-shadow .15s;}
+.split-in:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-weak);}
+.tool.split{background:var(--accent);color:var(--on-accent);border-color:transparent;box-shadow:0 4px 12px rgba(81,69,230,.22);}
+.tool.split:hover{filter:brightness(1.06);background:var(--accent);color:var(--on-accent);}
 
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
+/* options + compare */
+.actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px;margin:26px 0 6px;}
+.toggle{display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;font-weight:600;color:var(--text2);font-size:14px;}
+.toggle input{position:absolute;opacity:0;width:0;height:0;}
+.switch{width:42px;height:24px;border-radius:14px;background:var(--surface3);border:1px solid var(--border2);position:relative;transition:background .2s;flex-shrink:0;}
+.switch::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s;}
+.toggle input:checked + .switch{background:var(--accent);border-color:transparent;}
+.toggle input:checked + .switch::after{transform:translateX(18px);}
+.compare-wrap{text-align:center;margin:18px 0 6px;}
+.compare{display:inline-flex;align-items:center;gap:11px;padding:15px 40px;font-size:16.5px;font-weight:750;border-radius:14px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--on-accent);box-shadow:0 12px 26px rgba(81,69,230,.32);
+  transition:transform .06s,filter .15s,box-shadow .15s;}
+.compare:hover{filter:brightness(1.06);transform:translateY(-2px);box-shadow:0 16px 32px rgba(81,69,230,.4);}
+.compare:active{transform:translateY(0);}
+.compare .ic{width:20px;height:20px;stroke-width:2.3;}
+.kbd{font-size:11px;font-weight:600;opacity:.75;border:1px solid rgba(255,255,255,.4);border-radius:6px;padding:1px 6px;margin-left:4px;}
 
-    .logo {
-      font-weight: 700;
-      color: var(--primary-color);
-      font-size: 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+/* stats */
+.stats{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:22px 0 6px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:11px 16px;text-align:center;box-shadow:var(--shadow-sm);min-width:92px;}
+.stat b{display:block;font-size:22px;font-weight:800;letter-spacing:-.02em;line-height:1.1;}
+.stat span{font-size:11.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+.stat.sim b{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
 
-    .logo::before {
-      content: '📋';
-      font-size: 1.4rem;
-    }
+/* results */
+.section-label{display:flex;align-items:center;gap:10px;margin:30px 0 14px;}
+.section-label h2{font-size:18px;font-weight:800;letter-spacing:-.02em;}
+.section-label .line{flex:1;height:1px;background:var(--border);}
+.results{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+@media(max-width:900px){ .results{grid-template-columns:1fr;} }
+.split-results{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:820px){ .split-results{grid-template-columns:1fr;} }
+.rbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--shadow-sm);display:flex;flex-direction:column;overflow:hidden;}
+.rbox-head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border);}
+.rbox-title{display:flex;align-items:center;gap:9px;font-weight:750;font-size:14.5px;}
+.rbox-title .dot{width:9px;height:9px;}
+.rcount{font-size:12px;font-weight:800;padding:3px 9px;border-radius:20px;background:var(--surface2);color:var(--text2);border:1px solid var(--border);}
+.rbox-acts{margin-left:auto;display:flex;gap:6px;}
+.rcontent{white-space:pre-wrap;word-break:break-word;overflow-y:auto;max-height:340px;min-height:120px;padding:14px 16px;
+  font-family:var(--mono);font-size:13px;line-height:1.7;color:var(--text);}
+.rempty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text3);text-align:center;padding:36px 16px;min-height:120px;}
+.rempty .ic{width:26px;height:26px;color:var(--text3);}
+.dups{margin:0 16px 14px;font-size:12px;color:var(--red);background:var(--red-weak);border:1px solid transparent;border-radius:10px;padding:10px 12px;max-height:120px;overflow:auto;white-space:pre-wrap;}
 
-    textarea {
-      width: 100%;
-      height: 200px;
-      padding: 15px;
-      font-size: 14px;
-      resize: vertical;
-      border: 1px solid #d1d5db;
-      border-radius: 12px;
-      background-color: white;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-      transition: var(--transition);
-      font-family: 'Consolas', 'Monaco', monospace;
-    }
-
-    textarea:focus {
-      outline: none;
-      border-color: var(--primary-color);
-      box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.2);
-    }
-
-    .section {
-      width: 48%;
-      background: linear-gradient(145deg, #ffffff, #f1f5f9);
-      border-radius: 16px;
-      padding: 20px;
-      box-sizing: border-box;
-      margin-bottom: 20px;
-      box-shadow: var(--card-shadow);
-      transition: var(--transition);
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    .section:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 600;
-      color: var(--primary-color);
-      margin-bottom: 15px;
-      font-size: 1.1rem;
-      gap: 12px;
-    }
-
-    /* New: split control inside top bar */
-    .split-control {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-    .split-control input[type="number"] {
-      width: 72px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-      font-size: 13px;
-    }
-    .split-control button {
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: none;
-      background: linear-gradient(135deg, var(--accent-color), #ff6a45);
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .counter-group {
-      display: flex;
-      gap: 15px;
-      align-items: center;
-      font-size: 0.9rem;
-    }
-
-    .counter-group span {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    /* small clear button at top-right of box */
-    .clear-small {
-      margin-left: 8px;
-      background: transparent;
-      border: none;
-      color: var(--accent-color);
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    .container {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .section-controls {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
-      gap: 8px;
-    }
-
-    .section-controls button {
-      flex: 1;
-      padding: 8px 0;
-      font-size: 12px;
-      border-radius: 8px;
-      border: none;
-      background: var(--primary-color);
-      color: white;
-      cursor: pointer;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-
-    .section-controls button:hover {
-      background: var(--secondary-color);
-      transform: translateY(-1px);
-    }
-
-    .section-controls button:active {
-      transform: translateY(0);
-    }
-
-    .result-container {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-top: 30px;
-      gap: 20px;
-    }
-
-    .result-box {
-      width: 31%;
-      background: linear-gradient(145deg, #ffffff, #f1f5f9);
-      padding: 20px;
-      border-radius: 16px;
-      box-sizing: border-box;
-      box-shadow: var(--card-shadow);
-      transition: var(--transition);
-      border: 1px solid rgba(0,0,0,0.05);
-    }
-
-    /* used for split result boxes: make them wider */
-    #splitResults .result-box {
-      width: 48%;
-    }
-
-    .result-box:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-    }
-
-    .result-header {
-      font-weight: 600;
-      margin-bottom: 15px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: var(--primary-color);
-      font-size: 1.1rem;
-      gap: 8px;
-    }
-
-    .result-content {
-      white-space: pre-wrap;
-      max-height: 300px;
-      overflow-y: auto;
-      background: white;
-      padding: 15px;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      font-family: 'Consolas', 'Monaco', monospace;
-      font-size: 13px;
-      line-height: 1.5;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-    }
-
-    .duplicate-list {
-      margin-top: 8px;
-      font-size: 12px;
-      color: #c0392b;
-      background: rgba(255, 230, 230, 0.8);
-      padding: 8px;
-      border-radius: 8px;
-      max-height: 120px;
-      overflow-y: auto;
-      white-space: pre-wrap;
-    }
-
-    .controls, .checkboxes {
-      text-align: center;
-      margin-top: 25px;
-    }
-
-    button {
-      margin: 5px;
-      padding: 12px 24px;
-      font-size: 15px;
-      cursor: pointer;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-      color: white;
-      font-weight: 500;
-      transition: var(--transition);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 7px 14px rgba(0,0,0,0.15);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-
-    .night-mode {
-      background-color: var(--dark-bg);
-      color: var(--text-dark);
-    }
-
-    .night-mode textarea, .night-mode .result-content {
-      background-color: #252a33;
-      color: var(--text-dark);
-      border: 1px solid #444;
-    }
-
-    .night-mode .section, .night-mode .result-box {
-      background: linear-gradient(145deg, #252a33, #1e2329);
-      border-color: #444;
-    }
-
-    .night-mode button {
-      background: linear-gradient(135deg, #5a7bb5, #7a9ccf);
-    }
-
-    .night-mode h2 {
-      color: #a3c1ff;
-    }
-
-    .night-mode h2::after {
-      background: linear-gradient(90deg, #a3c1ff, #ff9f7f);
-    }
-
-    .night-mode .section-header, .night-mode .result-header {
-      color: #a3c1ff;
-    }
-
-    label {
-      margin: 0 15px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      font-weight: 500;
-    }
-
-    input[type="checkbox"] {
-      -webkit-appearance: none;
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--primary-color);
-      border-radius: 4px;
-      outline: none;
-      cursor: pointer;
-      position: relative;
-      transition: var(--transition);
-    }
-
-    input[type="checkbox"]:checked {
-      background-color: var(--primary-color);
-    }
-
-    input[type="checkbox"]:checked::after {
-      content: '✓';
-      position: absolute;
-      color: white;
-      font-size: 12px;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
-
-    /* Custom scrollbar */
-    ::-webkit-scrollbar {
-      width: 8px;
-      height: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: #c1c1c1;
-      border-radius: 10px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: #a8a8a8;
-    }
-
-    .night-mode ::-webkit-scrollbar-track {
-      background: #2a2f3a;
-    }
-
-    .night-mode ::-webkit-scrollbar-thumb {
-      background: #4a5568;
-    }
-
-    .night-mode ::-webkit-scrollbar-thumb:hover {
-      background: #5a677d;
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 900px) {
-      .container {
-        flex-direction: column;
-      }
-      .section, .result-box {
-        width: 100%;
-      }
-      .result-container {
-        flex-direction: column;
-      }
-      .section-header { flex-wrap: wrap; gap: 8px; }
-      .split-control { margin-top: 6px; }
-    }
-
-    /* Animation for compare button */
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .compare-animate {
-      animation: pulse 0.5s ease;
-    }
-  </style>
+/* toast */
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(14px);z-index:80;background:var(--text);color:var(--bg);
+  font-size:14px;font-weight:650;padding:11px 18px;border-radius:12px;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:9px;
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast .ic{width:18px;height:18px;color:#4ade80;stroke-width:2.5;}
+.foot{text-align:center;color:var(--text3);font-size:12.5px;margin-top:40px;}
+.foot a{color:var(--accent-ink);text-decoration:none;font-weight:600;}
+</style>
 </head>
 <body>
-  <div class="top-bar">
-    <div class="logo">List Compare by KK</div>
-    <button onclick="toggleNightMode()" title="Toggle Night Mode">🌙 Night Mode</button>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <symbol id="i-venn" viewBox="0 0 24 24"><circle cx="9" cy="12" r="7"/><circle cx="15" cy="12" r="7"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8Z"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><path d="M8 4L4 8l4 4"/><path d="M4 8h13"/><path d="M16 20l4-4-4-4"/><path d="M20 16H7"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 3l1.9 4.6L18.5 9.5l-4.6 1.9L12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2.5"/><path d="M6 15H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 19h14"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/></symbol>
+  <symbol id="i-dedupe" viewBox="0 0 24 24"><path d="M3 5h18M6 12h12M10 19h4"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 24 24"><path d="M7 4v16M7 4L4 7M7 4l3 3"/><path d="M12 6h9M12 11h6M12 16h3"/></symbol>
+  <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="M16 3h5v5M21 3l-7 7M8 21H3v-5M3 21l7-7M16 21h5v-5M15 15l6 6M3 3l6 6"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 8.1M14.5 12.5L20 20M8.1 15.9l4-2"/></symbol>
+  <symbol id="i-count" viewBox="0 0 24 24"><path d="M4 6h10M4 12h16M4 18h7"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></symbol>
+</defs></svg>
+
+<header class="topbar"><div class="topbar-in">
+  <div class="brand">
+    <div class="brand-logo"><svg viewBox="0 0 24 24"><use href="#i-venn"/></svg></div>
+    <div><div class="brand-name">List Compare</div><div class="brand-tag">Compare · dedupe · split · analyze</div></div>
   </div>
-  
-  <h2>Compare & Analyze Lists</h2>
-  
-  <div class="container">
-    <div class="section">
-      <div class="section-header">
-        <span>List A</span>
+  <div class="spacer"></div>
+  <button class="tbtn" id="exampleBtn" title="Load example data"><svg class="ic"><use href="#i-spark"/></svg><span class="lbl">Example</span></button>
+  <button class="tbtn" id="swapBtn" title="Swap A ↔ B"><svg class="ic"><use href="#i-swap"/></svg><span class="lbl">Swap</span></button>
+  <button class="tbtn icon" id="themeBtn" title="Toggle theme"><svg class="ic"><use href="#i-moon"/></svg></button>
+</div></header>
 
-        <!-- Split control placed in top bar as requested -->
-        <div class="split-control" title="Split from top">
-          <input id="splitA" type="number" min="0" placeholder="Split N">
-          <button onclick="splitList('listA','splitA')" title="Split from top">✂</button>
-        </div>
-
-        <!-- counters + clear small -->
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="counter-group">
-            <span title="Duplicate count">🧹 <span id="dupA">0</span></span>
-            <span title="Total items">📊 <span id="countA">0</span></span>
-          </div>
-          <button class="clear-small" onclick="clearList('listA')" title="Clear List A">✖</button>
-        </div>
-      </div>
-
-      <textarea id="listA" placeholder="Enter items for List A, one per line..." oninput="updateCount('A')"></textarea>
-      <div class="section-controls">
-        <button onclick="deduplicate('listA')" title="Remove Duplicates">🧹 De-Duplicate</button>
-        <button onclick="sortList('listA')" title="Sort Asc/Desc">⇅ Sort</button>
-        <!-- changed Reverse to Shuffle as requested -->
-        <button onclick="shuffleList('listA')" title="Shuffle Order">🔀 Shuffle</button>
-        <button onclick="copyText('listA')" title="Copy List A">📋 Copy</button>
-      </div>
-    </div>
-    
-    <div class="section">
-      <div class="section-header">
-        <span>List B</span>
-
-        <div class="split-control" title="Split from top">
-          <input id="splitB" type="number" min="0" placeholder="Split N">
-          <button onclick="splitList('listB','splitB')" title="Split from top">✂</button>
-        </div>
-
-        <div style="display:flex;align-items:center;gap:8px;">
-          <div class="counter-group">
-            <span title="Duplicate count">🧹 <span id="dupB">0</span></span>
-            <span title="Total items">📊 <span id="countB">0</span></span>
-          </div>
-          <button class="clear-small" onclick="clearList('listB')" title="Clear List B">✖</button>
-        </div>
-      </div>
-
-      <textarea id="listB" placeholder="Enter items for List B, one per line..." oninput="updateCount('B')"></textarea>
-      <div class="section-controls">
-        <button onclick="deduplicate('listB')" title="Remove Duplicates">🧹 De-Duplicate</button>
-        <button onclick="sortList('listB')" title="Sort Asc/Desc">⇅ Sort</button>
-        <button onclick="shuffleList('listB')" title="Shuffle Order">🔀 Shuffle</button>
-        <button onclick="copyText('listB')" title="Copy List B">📋 Copy</button>
-      </div>
-    </div>
+<main class="wrap">
+  <div class="hero">
+    <h1>Compare &amp; analyze two lists</h1>
+    <p>Paste, dedupe, split and diff — instantly, and entirely in your browser.</p>
   </div>
 
-  <!-- split results are hidden until user clicks Split -->
-  <div id="splitResults" class="result-container" style="display:none;margin-top:18px;"></div>
-
-  <div class="checkboxes">
-    <label><input type="checkbox" id="ignoreCase"> Ignore Case</label>
-    <label><input type="checkbox" id="trimValues"> Trim Whitespace</label>
-  </div>
-
-  <div class="controls">
-    <button onclick="compareAll()" id="compareBtn">🔍 Compare Lists</button>
-  </div>
-
-  <div class="result-container" style="margin-top:18px;">
-    <div class="result-box">
-      <div class="result-header">A Only <span id="countOnlyA">0</span>
-        <button onclick="copySection('resultOnlyA')" title="Copy A Only">📋 Copy</button>
+  <div class="grid">
+    <!-- List A -->
+    <div class="card" id="cardA">
+      <div class="card-head">
+        <span class="dot" style="background:var(--a)"></span>
+        <span class="card-title">List A</span>
+        <div class="badges">
+          <button class="badge" type="button" data-label="Total items" onclick="pokeBadge(this)"><svg class="ic"><use href="#i-count"/></svg><span id="countA">0</span></button>
+          <button class="badge dup" type="button" id="dupBadgeA" data-n="0" data-label="Duplicates" onclick="pokeBadge(this)"><svg class="ic"><use href="#i-dedupe"/></svg><span id="dupA">0</span></button>
+          <button class="iconbtn danger" onclick="clearList('listA')" title="Clear List A"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
       </div>
-      <div class="result-content" id="resultOnlyA"></div>
+      <textarea id="listA" class="ta" placeholder="Paste items for List A — one per line…  (or drop a .txt file)" oninput="onInput('A')"></textarea>
+      <div class="card-tools">
+        <button class="tool" onclick="deduplicate('listA')"><svg class="ic"><use href="#i-dedupe"/></svg>Dedupe</button>
+        <button class="tool" onclick="sortList('listA')"><svg class="ic"><use href="#i-sort"/></svg>Sort</button>
+        <button class="tool" onclick="shuffleList('listA')"><svg class="ic"><use href="#i-shuffle"/></svg>Shuffle</button>
+        <button class="tool" onclick="copyText('listA')"><svg class="ic"><use href="#i-copy"/></svg>Copy</button>
+        <input class="split-in" id="splitA" type="number" min="0" placeholder="N">
+        <button class="tool split" onclick="splitList('listA','splitA')"><svg class="ic"><use href="#i-scissors"/></svg>Split</button>
+      </div>
     </div>
-    <div class="result-box">
-      <div class="result-header">A ∩ B <span id="countCommon">0</span>
-        <button onclick="copySection('resultCommon')" title="Copy Common">📋 Copy</button>
+
+    <!-- List B -->
+    <div class="card" id="cardB">
+      <div class="card-head">
+        <span class="dot" style="background:var(--b)"></span>
+        <span class="card-title">List B</span>
+        <div class="badges">
+          <button class="badge" type="button" data-label="Total items" onclick="pokeBadge(this)"><svg class="ic"><use href="#i-count"/></svg><span id="countB">0</span></button>
+          <button class="badge dup" type="button" id="dupBadgeB" data-n="0" data-label="Duplicates" onclick="pokeBadge(this)"><svg class="ic"><use href="#i-dedupe"/></svg><span id="dupB">0</span></button>
+          <button class="iconbtn danger" onclick="clearList('listB')" title="Clear List B"><svg class="ic"><use href="#i-x"/></svg></button>
+        </div>
       </div>
-      <div class="result-content" id="resultCommon"></div>
-    </div>
-    <div class="result-box">
-      <div class="result-header">B Only <span id="countOnlyB">0</span>
-        <button onclick="copySection('resultOnlyB')" title="Copy B Only">📋 Copy</button>
+      <textarea id="listB" class="ta" placeholder="Paste items for List B — one per line…  (or drop a .txt file)" oninput="onInput('B')"></textarea>
+      <div class="card-tools">
+        <button class="tool" onclick="deduplicate('listB')"><svg class="ic"><use href="#i-dedupe"/></svg>Dedupe</button>
+        <button class="tool" onclick="sortList('listB')"><svg class="ic"><use href="#i-sort"/></svg>Sort</button>
+        <button class="tool" onclick="shuffleList('listB')"><svg class="ic"><use href="#i-shuffle"/></svg>Shuffle</button>
+        <button class="tool" onclick="copyText('listB')"><svg class="ic"><use href="#i-copy"/></svg>Copy</button>
+        <input class="split-in" id="splitB" type="number" min="0" placeholder="N">
+        <button class="tool split" onclick="splitList('listB','splitB')"><svg class="ic"><use href="#i-scissors"/></svg>Split</button>
       </div>
-      <div class="result-content" id="resultOnlyB"></div>
     </div>
   </div>
 
-  <script>
-    let sortState = { listA: 'asc', listB: 'asc' };
-    let nightMode = false;
+  <div class="actions">
+    <label class="toggle"><input type="checkbox" id="ignoreCase" onchange="onOption()"><span class="switch"></span>Ignore case</label>
+    <label class="toggle"><input type="checkbox" id="trimValues" checked onchange="onOption()"><span class="switch"></span>Trim whitespace</label>
+  </div>
+  <div class="compare-wrap">
+    <button class="compare" onclick="compareAll()" id="compareBtn"><svg class="ic"><use href="#i-venn"/></svg>Compare<span class="kbd">Ctrl ↵</span></button>
+  </div>
 
-    // splitData holds the current split halves so split-box actions can operate without touching original textareas
-    let splitData = { first: [], rest: [], sourceId: '' };
+  <!-- stats -->
+  <div class="stats" id="stats" hidden></div>
 
-    function parseList(id) {
-      const trim = document.getElementById('trimValues').checked;
-      let lines = document.getElementById(id).value.split(/\r?\n/);
-      
-      if (trim) {
-        lines = lines.map(s => s.trim()).filter(Boolean);
-      } else {
-        lines = lines.filter(s => s.length > 0);
-      }
-      
-      if (document.getElementById('ignoreCase').checked) {
-        lines = lines.map(s => s.toLowerCase());
-      }
-      return lines;
-    }
+  <!-- split results -->
+  <div id="splitWrap" hidden>
+    <div class="section-label"><h2>Split result</h2><div class="line"></div></div>
+    <div class="split-results" id="splitResults"></div>
+  </div>
 
-    function updateCount(which) {
-      const textarea = document.getElementById('list' + which);
-      const lines = textarea.value.split(/\r?\n/).filter(s => s.trim().length > 0);
-      const unique = new Set(lines.map(s => document.getElementById('ignoreCase').checked ? s.toLowerCase() : s));
-      // keep original count elements (these exist in the file)
-      document.getElementById('count' + which).innerText = lines.length;
-      document.getElementById('dup' + which).innerText = lines.length - unique.size;
-    }
-
-    function compareAll() {
-      const btn = document.getElementById('compareBtn');
-      btn.classList.add('compare-animate');
-      setTimeout(() => btn.classList.remove('compare-animate'), 500);
-      
-      const A = parseList('listA');
-      const B = parseList('listB');
-      const onlyInA = A.filter(x => !B.includes(x));
-      const onlyInB = B.filter(x => !A.includes(x));
-      const common = A.filter(x => B.includes(x));
-
-      document.getElementById('resultOnlyA').innerText = onlyInA.join('\n');
-      document.getElementById('resultOnlyB').innerText = onlyInB.join('\n');
-      document.getElementById('resultCommon').innerText = common.join('\n');
-
-      document.getElementById('countOnlyA').innerText = onlyInA.length;
-      document.getElementById('countOnlyB').innerText = onlyInB.length;
-      document.getElementById('countCommon').innerText = common.length;
-    }
-
-    function toggleNightMode() {
-      nightMode = !nightMode;
-      document.body.classList.toggle('night-mode');
-      const btn = document.querySelector('.top-bar button');
-      btn.textContent = nightMode ? '☀️ Day Mode' : '🌙 Night Mode';
-    }
-
-    function copySection(id) {
-      const text = document.getElementById(id).innerText;
-      navigator.clipboard.writeText(text).then(() => {
-        const btn = document.querySelector(`#${id}`).previousElementSibling.querySelector('button');
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '✓ Copied!';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-        }, 1500);
-      });
-    }
-
-    function deduplicate(id) {
-      const area = document.getElementById(id);
-      const lines = area.value.split(/\r?\n/).filter(s => s.trim().length > 0);
-      const unique = Array.from(new Set(lines));
-      area.value = unique.join('\n');
-      updateCount(id === 'listA' ? 'A' : 'B');
-    }
-
-    function sortList(id) {
-      const area = document.getElementById(id);
-      let lines = area.value.split(/\r?\n/).filter(s => s.trim().length > 0);
-      const current = sortState[id];
-      lines.sort((a, b) => a.localeCompare(b));
-      if (current === 'desc') lines.reverse();
-      sortState[id] = current === 'asc' ? 'desc' : 'asc';
-      area.value = lines.join('\n');
-      updateCount(id === 'listA' ? 'A' : 'B');
-    }
-
-    // replaced reverseList with shuffleList (keeps original functionality but shuffles)
-    function shuffleList(id) {
-      const area = document.getElementById(id);
-      let lines = area.value.split(/\r?\n/).filter(s => s.trim().length > 0);
-      for (let i = lines.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [lines[i], lines[j]] = [lines[j], lines[i]];
-      }
-      area.value = lines.join('\n');
-      updateCount(id === 'listA' ? 'A' : 'B');
-    }
-
-    function copyText(id) {
-      const text = document.getElementById(id).value;
-      navigator.clipboard.writeText(text).then(() => {
-        // find the copy button next to the textarea controls and flash it
-        const section = document.getElementById(id).parentElement;
-        const btns = section.querySelectorAll('.section-controls button');
-        // last button is copy in each section in original layout
-        const copyBtn = btns[btns.length - 1];
-        const originalText = copyBtn.innerHTML;
-        copyBtn.innerHTML = '✓ Copied!';
-        setTimeout(() => {
-          copyBtn.innerHTML = originalText;
-        }, 1500);
-      });
-    }
-
-    function clearList(id) {
-      document.getElementById(id).value = '';
-      updateCount(id === 'listA' ? 'A' : 'B');
-      // also hide split results if they came from this list
-      if (splitData.sourceId === id) {
-        document.getElementById('splitResults').style.display = 'none';
-        splitData = { first: [], rest: [], sourceId: '' };
-      }
-    }
-
-    // SPLIT FEATURES
-    function splitList(listId, splitInputId) {
-      const rawInput = document.getElementById(splitInputId).value;
-      const qty = parseInt(String(rawInput).trim(), 10);
-      if (isNaN(qty) || qty < 0) {
-        alert('Please enter a valid non-negative number to split.');
-        return;
-      }
-      const trim = document.getElementById('trimValues').checked;
-      // get original lines but apply trim option (do not force ignoreCase here to preserve original values)
-      let lines = document.getElementById(listId).value.split(/\r?\n/);
-      lines = lines.filter(s => (trim ? s.trim().length > 0 : s.length > 0));
-      if (trim) lines = lines.map(s => s.trim());
-
-      // allow qty larger than length by clamping
-      const qtyAdj = Math.max(0, Math.min(qty, lines.length));
-      const first = lines.slice(0, qtyAdj);
-      const rest = lines.slice(qtyAdj);
-
-      splitData.first = first.slice();
-      splitData.rest = rest.slice();
-      splitData.sourceId = listId;
-
-      renderSplitResults(first, rest, qtyAdj, lines.length);
-    }
-
-    function renderSplitResults(first, rest, qty, total) {
-      const container = document.getElementById('splitResults');
-      const dupFirst = getDuplicateValues(first);
-      const dupRest = getDuplicateValues(rest);
-
-      container.innerHTML = `
-        <div class="result-box">
-          <div class="result-header">
-            <div>First ${qty} &nbsp;<small style="font-weight:400;color:#666"> (cut from top)</small></div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="copySplitFirst" title="Copy first">📋 Copy</button>
-              <button id="dedupSplitFirst" title="De-duplicate first">🧹 De-Dup</button>
-            </div>
-          </div>
-          <div class="result-content" id="splitFirstContent"></div>
-          <div id="splitFirstDups" class="duplicate-list" style="${dupFirst.length? 'display:block;' : 'display:none;'}">
-            <strong>Duplicates (${dupFirst.length}):</strong>
-            <div id="splitFirstDupsList">${dupFirst.join('\\n')}</div>
-          </div>
+  <!-- compare results -->
+  <div id="resultsWrap" hidden>
+    <div class="section-label"><h2>Comparison</h2><div class="line"></div></div>
+    <div class="results">
+      <div class="rbox">
+        <div class="rbox-head"><div class="rbox-title"><span class="dot" style="background:var(--a)"></span>Only in A</div>
+          <span class="rcount" id="countOnlyA">0</span>
+          <div class="rbox-acts"><button class="iconbtn" onclick="copySection('resultOnlyA')" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button>
+          <button class="iconbtn" onclick="downloadSection('resultOnlyA','only-in-A.txt')" title="Download"><svg class="ic"><use href="#i-download"/></svg></button></div>
         </div>
-
-        <div class="result-box">
-          <div class="result-header">
-            <div>Remaining ${rest.length} &nbsp;<small style="font-weight:400;color:#666">(out of ${total})</small></div>
-            <div style="display:flex;gap:8px;align-items:center">
-              <button id="copySplitRest" title="Copy remaining">📋 Copy</button>
-              <button id="dedupSplitRest" title="De-duplicate remaining">🧹 De-Dup</button>
-            </div>
-          </div>
-          <div class="result-content" id="splitRestContent"></div>
-          <div id="splitRestDups" class="duplicate-list" style="${dupRest.length? 'display:block;' : 'display:none;'}">
-            <strong>Duplicates (${dupRest.length}):</strong>
-            <div id="splitRestDupsList">${dupRest.join('\\n')}</div>
-          </div>
+        <div class="rcontent" id="resultOnlyA"></div>
+      </div>
+      <div class="rbox">
+        <div class="rbox-head"><div class="rbox-title"><span class="dot" style="background:var(--common)"></span>In both (A ∩ B)</div>
+          <span class="rcount" id="countCommon">0</span>
+          <div class="rbox-acts"><button class="iconbtn" onclick="copySection('resultCommon')" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button>
+          <button class="iconbtn" onclick="downloadSection('resultCommon','in-both.txt')" title="Download"><svg class="ic"><use href="#i-download"/></svg></button></div>
         </div>
-      `;
+        <div class="rcontent" id="resultCommon"></div>
+      </div>
+      <div class="rbox">
+        <div class="rbox-head"><div class="rbox-title"><span class="dot" style="background:var(--b)"></span>Only in B</div>
+          <span class="rcount" id="countOnlyB">0</span>
+          <div class="rbox-acts"><button class="iconbtn" onclick="copySection('resultOnlyB')" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button>
+          <button class="iconbtn" onclick="downloadSection('resultOnlyB','only-in-B.txt')" title="Download"><svg class="ic"><use href="#i-download"/></svg></button></div>
+        </div>
+        <div class="rcontent" id="resultOnlyB"></div>
+      </div>
+    </div>
+  </div>
 
-      // set contents as text (preserves newlines)
-      document.getElementById('splitFirstContent').innerText = first.join('\n');
-      document.getElementById('splitRestContent').innerText = rest.join('\n');
+  <div class="foot">Runs 100% in your browser — nothing is uploaded. Your lists are saved locally on this device only.</div>
+</main>
 
-      // wire up buttons
-      document.getElementById('copySplitFirst').addEventListener('click', function(){
-        copySplit('first');
-      });
-      document.getElementById('copySplitRest').addEventListener('click', function(){
-        copySplit('rest');
-      });
-      document.getElementById('dedupSplitFirst').addEventListener('click', function(){
-        dedupSplit('first');
-      });
-      document.getElementById('dedupSplitRest').addEventListener('click', function(){
-        dedupSplit('rest');
-      });
+<div class="toast" id="toast"><svg class="ic"><use href="#i-check"/></svg><span id="toastMsg"></span></div>
 
-      container.style.display = 'flex';
-    }
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const sortState = { listA: "asc", listB: "asc" };
+let splitData = { first: [], rest: [], sourceId: "" };
+let compared = false;
 
-    function getDuplicateValues(arr) {
-      const freq = {};
-      arr.forEach(s => { freq[s] = (freq[s] || 0) + 1; });
-      return Object.keys(freq).filter(k => freq[k] > 1);
-    }
+/* ---------- theme ---------- */
+function applyTheme(t){ const dark=t==="dark"; document.documentElement.setAttribute("data-theme", dark?"dark":"light");
+  const u=$("themeBtn").querySelector("use"); if(u) u.setAttribute("href", dark?"#i-sun":"#i-moon"); }
+(function(){ let t="light"; try{ t=localStorage.getItem("lc_theme")||"light"; }catch{} applyTheme(t); })();
+$("themeBtn").addEventListener("click",()=>{ const t=document.documentElement.getAttribute("data-theme")==="dark"?"light":"dark"; try{localStorage.setItem("lc_theme",t);}catch{} applyTheme(t); });
 
-    function copySplit(which) {
-      const arr = which === 'first' ? splitData.first : splitData.rest;
-      navigator.clipboard.writeText(arr.join('\n')).then(() => {
-        const btnId = which === 'first' ? 'copySplitFirst' : 'copySplitRest';
-        const btn = document.getElementById(btnId);
-        const original = btn.innerText;
-        btn.innerText = '✓ Copied!';
-        setTimeout(()=> btn.innerText = original, 1500);
-      });
-    }
+/* ---------- toast ---------- */
+let toastT; function toast(msg){ $("toastMsg").textContent=msg; const t=$("toast"); t.classList.add("on"); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("on"),1500); }
+function flash(msg){ toast(msg); }
+// tap/click a counter badge -> reveal its label (mobile has no hover; desktop also gets it)
+function pokeBadge(el){ document.querySelectorAll(".badge.show").forEach(b=>{ if(b!==el){ b.classList.remove("show"); clearTimeout(b._t); } });
+  el.classList.toggle("show"); clearTimeout(el._t); if(el.classList.contains("show")) el._t=setTimeout(()=>el.classList.remove("show"),1800); }
 
-    function dedupSplit(which) {
-      if (which === 'first') {
-        splitData.first = Array.from(new Set(splitData.first));
-        document.getElementById('splitFirstContent').innerText = splitData.first.join('\n');
-        const dupList = getDuplicateValues(splitData.first);
-        const dupsEl = document.getElementById('splitFirstDups');
-        const dupsListEl = document.getElementById('splitFirstDupsList');
-        if (dupList.length) {
-          dupsEl.style.display = 'block';
-          dupsListEl.innerText = dupList.join('\n');
-        } else {
-          dupsEl.style.display = 'none';
-          dupsListEl.innerText = '';
-        }
-        const btn = document.getElementById('dedupSplitFirst');
-        const orig = btn.innerText; btn.innerText = '✓ Done'; setTimeout(()=>btn.innerText=orig,1200);
-      } else {
-        splitData.rest = Array.from(new Set(splitData.rest));
-        document.getElementById('splitRestContent').innerText = splitData.rest.join('\n');
-        const dupList = getDuplicateValues(splitData.rest);
-        const dupsEl = document.getElementById('splitRestDups');
-        const dupsListEl = document.getElementById('splitRestDupsList');
-        if (dupList.length) {
-          dupsEl.style.display = 'block';
-          dupsListEl.innerText = dupList.join('\n');
-        } else {
-          dupsEl.style.display = 'none';
-          dupsListEl.innerText = '';
-        }
-        const btn = document.getElementById('dedupSplitRest');
-        const orig = btn.innerText; btn.innerText = '✓ Done'; setTimeout(()=>btn.innerText=orig,1200);
-      }
-    }
+/* ---------- parsing / counts ---------- */
+function rawLines(id){ return $(id).value.split(/\r?\n/); }
+function parseList(id){
+  const trim=$("trimValues").checked;
+  let lines=rawLines(id);
+  lines = trim ? lines.map(s=>s.trim()).filter(Boolean) : lines.filter(s=>s.length>0);
+  if ($("ignoreCase").checked) lines=lines.map(s=>s.toLowerCase());
+  return lines;
+}
+function updateCount(which){
+  const lines=rawLines("list"+which).filter(s=>s.trim().length>0);
+  const uniq=new Set(lines.map(s=>$("ignoreCase").checked?s.trim().toLowerCase():s.trim()));
+  $("count"+which).textContent=lines.length;
+  const dup=lines.length-uniq.size;
+  $("dup"+which).textContent=dup;
+  $("dupBadge"+which).dataset.n=String(dup);
+}
+let saveT;
+function onInput(which){ updateCount(which); clearTimeout(saveT); saveT=setTimeout(persist,400); if(compared) compareAll(true); }
+function onOption(){ updateCount("A"); updateCount("B"); if(compared) compareAll(true); }
 
-    // Initialize with some example data
-    window.onload = function() {
-      // keep original behavior (start empty)
-      document.getElementById('listA').value = "";
-      document.getElementById('listB').value = "";
-      updateCount('A');
-      updateCount('B');
-    };
-  </script>
+/* ---------- persistence (local only) ---------- */
+function persist(){ try{ localStorage.setItem("lc_A",$("listA").value); localStorage.setItem("lc_B",$("listB").value); }catch{} }
+(function restore(){ try{ const a=localStorage.getItem("lc_A"), b=localStorage.getItem("lc_B"); if(a!=null)$("listA").value=a; if(b!=null)$("listB").value=b; }catch{} updateCount("A"); updateCount("B"); })();
+
+/* ---------- compare ---------- */
+function compareAll(silent){
+  const A=parseList("listA"), B=parseList("listB");
+  const setB=new Set(B), setA=new Set(A);
+  const onlyA=[...new Set(A)].filter(x=>!setB.has(x));
+  const onlyB=[...new Set(B)].filter(x=>!setA.has(x));
+  const common=[...new Set(A)].filter(x=>setB.has(x));
+  fill("resultOnlyA", onlyA, "Nothing unique to A", "i-venn");
+  fill("resultCommon", common, "No shared items", "i-venn");
+  fill("resultOnlyB", onlyB, "Nothing unique to B", "i-venn");
+  $("countOnlyA").textContent=onlyA.length; $("countCommon").textContent=common.length; $("countOnlyB").textContent=onlyB.length;
+  // stats
+  const uA=setA.size, uB=setB.size, uni=new Set([...A,...B]).size;
+  const sim = uni? Math.round((common.length/uni)*100) : 0;
+  $("stats").innerHTML =
+    stat(uA,"unique in A")+stat(uB,"unique in B")+stat(common.length,"in both")+
+    stat(onlyA.length,"only A")+stat(onlyB.length,"only B")+stat(sim+"%","similarity","sim");
+  $("stats").hidden=false; $("resultsWrap").hidden=false;
+  compared=true;
+  if(!silent){ $("resultsWrap").scrollIntoView({behavior:"smooth",block:"nearest"}); }
+}
+function stat(v,label,cls){ return `<div class="stat ${cls||''}"><b>${v}</b><span>${label}</span></div>`; }
+function fill(id, arr, emptyMsg, icon){
+  const el=$(id);
+  if(!arr.length){ el.innerHTML=`<div class="rempty"><svg class="ic"><use href="#${icon}"/></svg>${emptyMsg}</div>`; el.classList.add("is-empty"); }
+  else { el.classList.remove("is-empty"); el.textContent=arr.join("\n"); }
+}
+
+/* ---------- list tools ---------- */
+function deduplicate(id){ const lines=rawLines(id).filter(s=>s.trim().length>0); const seen=new Set(), out=[];
+  for(const l of lines){ const k=$("ignoreCase").checked?l.trim().toLowerCase():l.trim(); if(!seen.has(k)){seen.add(k);out.push(l);} }
+  const removed=lines.length-out.length; $(id).value=out.join("\n"); afterEdit(id); flash(removed?`Removed ${removed} duplicate${removed>1?'s':''}`:"No duplicates"); }
+function sortList(id){ let lines=rawLines(id).filter(s=>s.trim().length>0); const cur=sortState[id];
+  lines.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true,sensitivity:"base"})); if(cur==="desc")lines.reverse();
+  sortState[id]=cur==="asc"?"desc":"asc"; $(id).value=lines.join("\n"); afterEdit(id); flash(cur==="asc"?"Sorted A→Z":"Sorted Z→A"); }
+function shuffleList(id){ let lines=rawLines(id).filter(s=>s.trim().length>0); for(let i=lines.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[lines[i],lines[j]]=[lines[j],lines[i]];}
+  $(id).value=lines.join("\n"); afterEdit(id); flash("Shuffled"); }
+function copyText(id){ const v=$(id).value; if(!v.trim())return flash("List is empty"); navigator.clipboard.writeText(v).then(()=>flash("Copied list")); }
+function clearList(id){ $(id).value=""; afterEdit(id); if(splitData.sourceId===id){ $("splitWrap").hidden=true; splitData={first:[],rest:[],sourceId:""}; } flash("Cleared"); }
+function afterEdit(id){ updateCount(id==="listA"?"A":"B"); persist(); if(compared) compareAll(true); }
+
+/* ---------- copy / download results ---------- */
+function copySection(id){ const el=$(id); if(el.classList.contains("is-empty"))return flash("Nothing to copy"); navigator.clipboard.writeText(el.innerText).then(()=>flash("Copied")); }
+function downloadSection(id,name){ const el=$(id); if(el.classList.contains("is-empty"))return flash("Nothing to download"); download(el.innerText,name); }
+function download(text,name){ const blob=new Blob([text],{type:"text/plain"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),8000); flash("Downloaded "+name); }
+
+/* ---------- split ---------- */
+function splitList(listId, splitInputId){
+  const qty=parseInt(String($(splitInputId).value).trim(),10);
+  if(isNaN(qty)||qty<0) return flash("Enter a number to split at");
+  const trim=$("trimValues").checked;
+  let lines=rawLines(listId); lines=lines.filter(s=>trim?s.trim().length>0:s.length>0); if(trim)lines=lines.map(s=>s.trim());
+  const q=Math.max(0,Math.min(qty,lines.length));
+  splitData={first:lines.slice(0,q), rest:lines.slice(q), sourceId:listId};
+  renderSplit(splitData.first, splitData.rest, q, lines.length);
+}
+function renderSplit(first, rest, qty, total){
+  const c=$("splitResults");
+  c.innerHTML=`
+    <div class="rbox">
+      <div class="rbox-head"><div class="rbox-title"><span class="dot" style="background:var(--accent)"></span>First ${qty}</div>
+        <span class="rcount">${first.length}</span>
+        <div class="rbox-acts"><button class="iconbtn" id="cpF" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button>
+        <button class="iconbtn" id="ddF" title="Dedupe"><svg class="ic"><use href="#i-dedupe"/></svg></button>
+        <button class="iconbtn" id="dlF" title="Download"><svg class="ic"><use href="#i-download"/></svg></button></div>
+      </div>
+      <div class="rcontent" id="splitFirst"></div>
+      <div class="dups" id="dupF" hidden></div>
+    </div>
+    <div class="rbox">
+      <div class="rbox-head"><div class="rbox-title"><span class="dot" style="background:var(--b)"></span>Remaining</div>
+        <span class="rcount">${rest.length}</span><span style="font-size:12px;color:var(--text3)">of ${total}</span>
+        <div class="rbox-acts"><button class="iconbtn" id="cpR" title="Copy"><svg class="ic"><use href="#i-copy"/></svg></button>
+        <button class="iconbtn" id="ddR" title="Dedupe"><svg class="ic"><use href="#i-dedupe"/></svg></button>
+        <button class="iconbtn" id="dlR" title="Download"><svg class="ic"><use href="#i-download"/></svg></button></div>
+      </div>
+      <div class="rcontent" id="splitRest"></div>
+      <div class="dups" id="dupR" hidden></div>
+    </div>`;
+  $("splitFirst").textContent=first.join("\n"); $("splitRest").textContent=rest.join("\n");
+  showDups("dupF", first); showDups("dupR", rest);
+  $("cpF").onclick=()=>{navigator.clipboard.writeText(splitData.first.join("\n")).then(()=>flash("Copied"));};
+  $("cpR").onclick=()=>{navigator.clipboard.writeText(splitData.rest.join("\n")).then(()=>flash("Copied"));};
+  $("dlF").onclick=()=>download(splitData.first.join("\n"),"first-"+qty+".txt");
+  $("dlR").onclick=()=>download(splitData.rest.join("\n"),"remaining.txt");
+  $("ddF").onclick=()=>{ splitData.first=dedupeArr(splitData.first); $("splitFirst").textContent=splitData.first.join("\n"); showDups("dupF",splitData.first); flash("Deduped"); };
+  $("ddR").onclick=()=>{ splitData.rest=dedupeArr(splitData.rest); $("splitRest").textContent=splitData.rest.join("\n"); showDups("dupR",splitData.rest); flash("Deduped"); };
+  $("splitWrap").hidden=false; $("splitWrap").scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+function dedupeArr(a){ return Array.from(new Set(a)); }
+function dupValues(arr){ const f={}; arr.forEach(s=>f[s]=(f[s]||0)+1); return Object.keys(f).filter(k=>f[k]>1); }
+function showDups(id,arr){ const d=dupValues(arr); const el=$(id); if(!d.length){el.hidden=true;return;} el.hidden=false; el.textContent=`Duplicates (${d.length}): `+d.join(", "); }
+
+/* ---------- example / swap ---------- */
+function loadExample(){
+  $("listA").value=["apple","banana","cherry","date","elderberry","fig","grape","apple"].join("\n");
+  $("listB").value=["banana","cherry","dragonfruit","fig","grape","honeydew","kiwi","banana"].join("\n");
+  updateCount("A"); updateCount("B"); persist(); compareAll(); flash("Loaded example");
+}
+$("exampleBtn").addEventListener("click", loadExample);
+function swapLists(){ const a=$("listA").value; $("listA").value=$("listB").value; $("listB").value=a; updateCount("A"); updateCount("B"); persist(); if(compared)compareAll(true); flash("Swapped A ↔ B"); }
+$("swapBtn").addEventListener("click", swapLists);
+
+/* ---------- file drop ---------- */
+["A","B"].forEach(w=>{ const card=$("card"+w), ta=$("list"+w);
+  card.addEventListener("dragover",e=>{e.preventDefault();card.classList.add("drag");});
+  card.addEventListener("dragleave",()=>card.classList.remove("drag"));
+  card.addEventListener("drop",e=>{ e.preventDefault(); card.classList.remove("drag"); const f=e.dataTransfer.files[0]; if(!f)return;
+    const r=new FileReader(); r.onload=()=>{ ta.value=(ta.value?ta.value.replace(/\s*$/,"")+"\n":"")+r.result; updateCount(w); persist(); if(compared)compareAll(true); flash("Loaded "+f.name); }; r.readAsText(f); });
+});
+
+/* ---------- keyboard ---------- */
+document.addEventListener("keydown",e=>{ if((e.ctrlKey||e.metaKey)&&e.key==="Enter"){ e.preventDefault(); compareAll(); } });
+</script>
 </body>
 </html>
